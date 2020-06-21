@@ -20,16 +20,25 @@ const goButtonProps = {
     title: "Go",
 }
 
+const sendMessageProps = {
+    color: 'hsla(182, 24%, 86%, 1)',
+    title: "Send Message",
+}
+
 export default function App() {
 
-    const [host, setHost] = useState("")
-    const [connected, connect] = useSocket()
+    const defaultHost = "192.168.1.156:8080"
+    const [host, setHost] = useState("192.168.1.156:8080")
+    const [connected, connect, sendMessage, closeConnection] = useSocket()
 
-    const defaultHost = "192.168.1.156"
-    const defaultPort = "8080"
+
+    //DEBUG PURPOUSE
+    const [message, setMessage] = useState("")
+
+    console.log({connected})
+
 
     return (
-
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
                 <Text style={styles.header}>
@@ -39,29 +48,31 @@ export default function App() {
                     by Gianfranco Demarco
                 </Text>
             </View>
-
-
-
-            <Button {...hostButtonProps}
-                onPress={() => {
-                    connect(defaultHost, defaultPort)
-                }}
+            <Button
+                    {...hostButtonProps}
+                    onPress={() => connect(defaultHost.split((":")))}
+                    disabled={connected}
             />
             <Text style={defaultLabelStyles}>
                 or
             </Text>
-
             <View style={{flexDirection:"column"}}>
                 <TextInput
                     style={styles.hostInput}
                     value={host}
                     onChangeText={host => setHost(host)}
                 />
-                <Button
-                    onPress={() => connect(host.split(":")[0], host.split(":")[1])}
-                    {...goButtonProps}/>
+                <Button disabled={connected} onPress={() => connect(host.split((":")))} {...goButtonProps}/>
             </View>
 
+            <View style={{flexDirection:"column", marginTop: 20}}>
+                <TextInput
+                    style={styles.hostInput}
+                    value={message}
+                    onChangeText={message => setMessage(message)}
+                />
+                <Button onPress={() => sendMessage(message)} {...sendMessageProps} disabled={!connected}/>
+            </View>
         </SafeAreaView>
     );
 }
