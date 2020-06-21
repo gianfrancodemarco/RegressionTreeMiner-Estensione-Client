@@ -2,6 +2,7 @@ import React, {useState, useEffect, useMemo} from 'react'
 import TcpSocket from 'react-native-tcp-socket';
 import useToast from './useToast';
 
+
 export default function useSocket(){
 
     const [options, setOptions] = useState({})
@@ -67,9 +68,11 @@ export default function useSocket(){
 
     //Interface
     const closeConnection = () => client.destroy()
-    const sendMessage = (message) => {
+    const sendMessage = (message, callback) => {
         showToast("[SENT to server] -> " + message)
         client.write(message)
+        if(callback)
+            callback()
     }
     const decodeMessage = (message) => message.toString('utf-8')
 

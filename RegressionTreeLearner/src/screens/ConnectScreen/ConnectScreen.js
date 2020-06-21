@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import styles from "./AppStyles";
+import React, {useState, useEffect} from 'react';
+import styles from "./ConnectScreenStyles";
 import {
     Text,
     SafeAreaView,
@@ -7,8 +7,9 @@ import {
     View,
     TextInput
 } from 'react-native';
-import {defaultLabelStyles} from './GenericStyles'
-import useSocket from "./../hooks/useSocket";
+import {defaultLabelStyles} from '../GenericStyles'
+import useSocket from "../../hooks/useSocket";
+import {Actions} from 'react-native-router-flux'
 
 const hostButtonProps = {
     color: 'hsla(215, 67%, 34%, 1)',
@@ -25,7 +26,7 @@ const sendMessageProps = {
     title: "Send Message",
 }
 
-export default function App() {
+export default function ConnectScreen(props) {
 
     const defaultHost = "192.168.1.156:8080"
     const [host, setHost] = useState("192.168.1.156:8080")
@@ -35,7 +36,12 @@ export default function App() {
     //DEBUG PURPOUSE
     const [message, setMessage] = useState("")
 
-    console.log({connected})
+    useEffect(() => {
+        if(connected)
+            goToSecondScreen()
+    }, [connected])
+
+    const goToSecondScreen = () => Actions.secondScreen([connected, connect, sendMessage, closeConnection])
 
 
     return (
