@@ -1,8 +1,8 @@
-import {StyleSheet, StatusBar, Platform} from "react-native";
+import {Platform, StatusBar, StyleSheet} from "react-native";
 
-const styles = StyleSheet.create({
+const MainLayoutStyles = StyleSheet.create({
     container: {
-        flex: 0.8,
+        flex: 1,
         alignItems: 'center',
         marginTop: Platform?.OS.toLowerCase() === "android" ? StatusBar.currentHeight + 50: 20
     },
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     credits: {
         color: 'hsla(182, 24%, 86%, 1)',
         justifyContent: 'center'
-    }
-});
+    },
+})
 
-export default styles
+export default MainLayoutStyles

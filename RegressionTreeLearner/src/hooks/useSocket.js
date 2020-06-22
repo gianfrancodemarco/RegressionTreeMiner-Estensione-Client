@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useMemo} from 'react'
 import TcpSocket from 'react-native-tcp-socket';
 import useToast from './useToast';
+import {decodeMessage} from '../utils/Utils';
 
 
 export default function useSocket(){
@@ -12,14 +13,13 @@ export default function useSocket(){
     const [showToast, showToastWithGravity, showToastWithGravityAndOffset] = useToast()
 
     const connect = ([host, port]) => {
-        //console.log("Pressed connect")
         setOptions({host, port})
         setConnecting(true)
         setConnected(false)
         setClient(null)
     }
 
-    //AFTER CONNECT
+    //CONNECTING
     useEffect(() => {
         if (!connected && connecting && client == null) {
             console.log(`[Attempting to connect ${options.host}:${options.port}]`)
@@ -31,8 +31,6 @@ export default function useSocket(){
     //WHEN CONNECTED
     useEffect(() => {
         console.log("Cheking connected")
-        console.log({client})
-        console.log(client !== null && client !== undefined)
         if(client !== null && client !== undefined){
             console.debug('Initializing client');
             setConnected(true)
@@ -41,13 +39,21 @@ export default function useSocket(){
         }
     }, [client])
 
+    const sendMessage = (message, callback) => {
+        showToast("[SENT to server] -> " + message)
+        client.write(message)
+        if(callback)
+            callback()
+    }
+
     const initializeClient = () => {
-        client.on('connect', function () {
+        client.on('ready', function () {
             console.log(`CONNECTED TO ${options.host}:${options.port}`)
         });
 
         client.on('data', function (data) {
-            showToastWithGravity(`[RECEIVED from ${options.host}:${options.port}] \n ${decodeMessage(data)}`)
+            const decoded = decodeMessage(data)
+            showToastWithGravity(`[RECEIVED from ${options.host}:${options.port}] \n ${decoded}`)
         });
 
         client.on('error', function (error) {
@@ -65,16 +71,7 @@ export default function useSocket(){
             setConnected(false)
         });
     }
-
-    //Interface
     const closeConnection = () => client.destroy()
-    const sendMessage = (message, callback) => {
-        showToast("[SENT to server] -> " + message)
-        client.write(message)
-        if(callback)
-            callback()
-    }
-    const decodeMessage = (message) => message.toString('utf-8')
 
-    return useMemo(() =>([connected, connect, sendMessage, closeConnection, options, setOptions]), [connected])
+    return useMemo(() =>([connected, connect, sendMessage, client, closeConnection, options, setOptions]), [connected])
 }
