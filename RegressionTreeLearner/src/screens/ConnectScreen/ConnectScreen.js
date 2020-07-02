@@ -21,13 +21,12 @@ export default function ConnectScreen() {
     const defaultHost = "192.168.1.156:8080"
     const [host, setHost] = useState("192.168.1.156:8080")
     const [connected, connect, sendMessage, client, closeConnection] = useSocket()
-    const [message, setMessage] = useState("")
 
     useEffect(() => {
         if(connected){
             dispatch({type:"UPDATE_SOCKET", payload:{socket: [connected, connect, sendMessage, client, closeConnection]}})
             dispatch({type:"LOADING", payload: {isLoading: false}})
-            Actions.LoadDataset()
+            Actions.loadDataset()
         }
     }, [connected])
 
@@ -52,16 +51,7 @@ export default function ConnectScreen() {
                         value={host}
                         onChangeText={host => setHost(host)}
                     />
-                    <Button disabled={connected} onPress={() => connect(host.split((":")))} {...goButtonProps}/>
-                </View>
-
-                <View style={{flexDirection:"column", marginTop: 20}}>
-                    <TextInput
-                        style={ConnectScreenStyles.hostInput}
-                        value={message}
-                        onChangeText={message => setMessage(message)}
-                    />
-                    <Button onPress={() => sendMessage(message)} {...sendMessageProps} disabled={!connected}/>
+                    <Button disabled={connected} onPress={() => connect(host.split((":")))} {...connectButtonProps}/>
                 </View>
             </MainLayout>
     );
@@ -72,12 +62,7 @@ const hostButtonProps = {
     title: "Connect to hosted server",
 }
 
-const goButtonProps = {
+const connectButtonProps = {
     color: 'hsla(215, 67%, 34%, 1)',
-    title: "Go",
-}
-
-const sendMessageProps = {
-    color: 'hsla(182, 24%, 86%, 1)',
-    title: "Next",
+    title: "Connect",
 }

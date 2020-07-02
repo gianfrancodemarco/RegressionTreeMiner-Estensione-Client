@@ -30,7 +30,7 @@ export default function useSocket(){
 
     //WHEN CONNECTED
     useEffect(() => {
-        console.log("Cheking connected")
+        console.log("Checking connected")
         if(client !== null && client !== undefined){
             console.debug('Initializing client');
             setConnected(true)
@@ -53,7 +53,8 @@ export default function useSocket(){
 
         client.on('data', function (data) {
             const decoded = decodeMessage(data)
-            showToastWithGravity(`[RECEIVED from ${options.host}:${options.port}] \n ${decoded}`)
+            console.log((`[RECEIVED from ${options.host}:${options.port}] \n ${decoded}`))
+            //showToastWithGravity(`[RECEIVED from ${options.host}:${options.port}] \n ${decoded}`)
         });
 
         client.on('error', function (error) {

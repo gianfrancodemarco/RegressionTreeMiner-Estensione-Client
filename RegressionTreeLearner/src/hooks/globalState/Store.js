@@ -4,6 +4,7 @@ import Reducer from './Reducer'
 
 const initialState = {
     socket: null,
+    tree: null,
     isLoading: false,
 };
 

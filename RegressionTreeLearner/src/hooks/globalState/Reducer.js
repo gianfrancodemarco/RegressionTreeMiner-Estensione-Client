@@ -9,7 +9,13 @@ const Reducer = (state, action) => {
             return {
                 ...state,
                 isLoading: action.payload.isLoading
+            };
+        case 'TREE':
+            return {
+                ...state,
+                tree: action.payload.tree
             }
+
         default:
             return state;
     }

@@ -9,6 +9,7 @@ import RadioForm from 'react-native-simple-radio-button';
 import {Context} from '../../hooks/globalState/Store';
 import {decodeMessage} from '../../utils/Utils';
 import MainLayout from '../MainLayout/MainLayout';
+import {Actions} from 'react-native-router-flux'
 
 
 export default function LoadDatasetScreen() {
@@ -19,10 +20,6 @@ export default function LoadDatasetScreen() {
     const [learnOption, setLearnOption] = useState(0)
     const [table, setTable] = useState(0)
 
-    const sendMessageProps = {
-        color: 'hsla(182, 24%, 86%, 1)',
-        title: "Next",
-    }
 
     const [step, setStep] = useState(1)
     const [tableOptions, setTableOptions] = useState()
@@ -38,6 +35,7 @@ export default function LoadDatasetScreen() {
             options = options.map((el, index) => ({"label":el.replace('.dmp', ''), "value": index}))
             setTableOptions(options)
             client.off('data', tableReceivedObserver)
+            client.on('data', treeReceivedObserver)
             dispatch({type:"LOADING", payload: {isLoading:false}})
         }
     }
@@ -45,6 +43,21 @@ export default function LoadDatasetScreen() {
     useEffect(() => {
         client.on('data', tableReceivedObserver)
     }, [])
+    //////////////////////////////////////////////////////////////////////////////
+
+    //ADD TREE LISTENER
+    const treeReceivedObserver = (data) => {
+        const decoded = decodeMessage(data)
+        const identifier = "[TREE]"
+
+        if(decoded && decoded.indexOf(identifier) !== -1){
+            client.off('data', tableReceivedObserver)
+            dispatch({type:"TREE", payload: {tree: decoded}})
+            dispatch({type:"LOADING", payload: {isLoading:false}})
+            Actions.showTree()
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////
 
     const sendMode = () => {
@@ -55,14 +68,18 @@ export default function LoadDatasetScreen() {
     const sendDataset = () => {
         //dispatch({type:"LOADING", payload: {isLoading:true}})
         sendMessage(table.toString())
-        setStep(3)
+    }
+
+    const radioGroupStyle = {
+        flexGrow: 0.8,
+        minWidth: 0.6
     }
 
     return (
         <MainLayout style={styles.container}>
             {step === 1 &&
             <View>
-                <RadioForm
+                <RadioForm style={radioGroupStyle}
                     radio_props={LEARNOPTIONS}
                     initial={0}
                     onPress={(value) => {setLearnOption(value)}}
@@ -72,22 +89,22 @@ export default function LoadDatasetScreen() {
 
             {step === 2 && !state.isLoading &&
             <View>
-                <RadioForm
+                <RadioForm style={radioGroupStyle}
                     radio_props={tableOptions}
                     initial={0}
                     onPress={(value) => {setTable(value)}}
                 />
-                <Button onPress={() => sendDataset()} {...sendMessageProps} disabled={!connected}/>
+                <Button title={"Next"} onPress={() => sendDataset()} disabled={!connected}/>
             </View>}
 
             {step === 3 &&
             <View>
-                <RadioForm
+                <RadioForm style={radioGroupStyle}
                     radio_props={DATASETOPTION}
                     initial={0}
                     onPress={(value) => {setAction(value)}}
                 />
-                <Button onPress={() => sendDataset()} {...sendMessageProps} disabled={!connected}/>
+                <Button title={"Next"} onPress={() => sendDataset()} disabled={!connected}/>
             </View>}
         </MainLayout>
     );
