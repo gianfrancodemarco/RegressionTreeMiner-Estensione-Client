@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {StyleSheet, SafeAreaView, ScrollView} from 'react-native'
+import {StyleSheet, SafeAreaView, ScrollView, Dimensions} from 'react-native'
 import TreeNode from './TreeNode';
 import TreeRow from "./TreeRow";
 
@@ -16,36 +16,17 @@ export default function Tree(props) {
     const contentContainerStyle = {
         alignItems: 'center',
         backgroundColor: 'blue',
-        flexGrow: 1
+        height: Dimensions.get('window').height
     }
 
 
     return (
         <SafeAreaView>
-            <ScrollView
-                bounces={true}
-                bouncesZoom={true}
-                maximumZoomScale={2.0}
-                minimumZoomScale={0.5}
-                showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={contentContainerStyle}
-            >
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-                <TreeNode label={props.data.label} />
-
-                {props.data.children && <TreeRow elements={props.data.children} />}
+            <ScrollView contentContainerStyle={contentContainerStyle} >
+                <TreeNode
+                    label={props.data.label}
+                />
+                <TreeRow elements={props.data.children} />
             </ScrollView>
         </SafeAreaView>
     )

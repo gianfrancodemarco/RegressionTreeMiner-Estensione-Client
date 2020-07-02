@@ -14,6 +14,11 @@ const Reducer = (state, action) => {
             return {
                 ...state,
                 tree: action.payload.tree
+            };
+        case 'RULES':
+            return {
+                ...state,
+                rules: action.payload.rules
             }
 
         default:

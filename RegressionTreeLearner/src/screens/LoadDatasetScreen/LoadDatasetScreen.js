@@ -52,13 +52,29 @@ export default function LoadDatasetScreen() {
 
         if(decoded && decoded.indexOf(identifier) !== -1){
             client.off('data', tableReceivedObserver)
-            dispatch({type:"TREE", payload: {tree: decoded}})
+            dispatch({type:"TREE", payload: {tree: decoded.replace(identifier, '')}})
+            client.on('data', rulesReceiverObserver)
             dispatch({type:"LOADING", payload: {isLoading:false}})
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+
+    //ADD TREE LISTENER
+    const rulesReceiverObserver = (data) => {
+        const decoded = decodeMessage(data)
+        const identifier = "[RULES]"
+
+        if(decoded && decoded.indexOf(identifier) !== -1){
+            console.log('Received rules', decoded)
+            client.off('data', rulesReceiverObserver)
+            dispatch({type:"RULES", payload: {rules: decoded.replace(identifier, '')}})
             Actions.showTree()
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////
+
 
     const sendMode = () => {
         dispatch({type:"LOADING", payload: {isLoading:true}})

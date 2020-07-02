@@ -10,7 +10,7 @@ export default function MainLayout(props) {
 
     return (
         <SafeAreaView style={MainLayoutStyles.container}>
-            <View style={MainLayoutStyles.innerContainer}>
+            <View style={props.customContainer ? props.customContainer : MainLayoutStyles.innerContainer}>
                 <Text style={MainLayoutStyles.header}>
                     RegressionTreeLearner
                 </Text>
@@ -27,7 +27,7 @@ export default function MainLayout(props) {
                     />
                 ) :
                 (
-                    <View style={MainLayoutStyles.innerContainer}>
+                    <View style={props.customInnerContainer ? props.customInnerContainer : MainLayoutStyles.innerContainer}>
                         {props.children}
                     </View>
                 )

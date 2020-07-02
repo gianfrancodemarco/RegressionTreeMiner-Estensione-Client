@@ -1,10 +1,11 @@
 import React from 'react'
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {round} from "react-native-reanimated";
 
 
 export default function Tree(props) {
 
-    const size = 75
+    const size = 50
     const contentContainerStyle = {
         justifyContent: "center",
         alignItems: "center",
@@ -15,19 +16,21 @@ export default function Tree(props) {
         width: size,
         height: size,
         backgroundColor: "yellow", //"#AAA",
-        marginRight: 20,
+        marginRight: 0,
+        justifyContent: "center",
+        alignItems: "center"
     }
 
-    const style = props.offset ? {position: 'relative', right: parseInt(props.offset) * size} : {}
-    console.log({style})
+    rounded.position = 'relative'
+    rounded.marginRight = 0//props.offset ? props.offset * size : 0
 
     return (
         <View
             contentContainerStyle={contentContainerStyle}
-            style={{...rounded, ...style}}
+            style={{...rounded}}
             onLayout={props.onLayout}
         >
-            <Text>{style.right}</Text>
+            <Text>{rounded.marginRight}</Text>
         </View>
     )
 
