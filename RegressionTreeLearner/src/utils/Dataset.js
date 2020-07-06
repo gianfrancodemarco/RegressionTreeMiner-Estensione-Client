@@ -19,3 +19,15 @@ export const DATASETOPTION = [
         value: 1
     }
 ]
+
+
+/*style={{fontFamily:'normal'}}
+style={{fontFamily:'notoserif'}}
+style={{fontFamily:'sans-serif'}}
+style={{fontFamily:'sans-serif-light'}}
+style={{fontFamily:'sans-serif-thin'}}
+style={{fontFamily:'sans-serif-condensed'}}
+style={{fontFamily:'sans-serif-medium'}}
+style={{fontFamily:'serif'}}
+style={{fontFamily:'Roboto'}}
+style={{fontFamily:'monopace'}}*/

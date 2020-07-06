@@ -12,10 +12,11 @@ const ConnectScreenStyles = StyleSheet.create({
     },
     hostInput: {
         borderWidth : 1.5,
-        borderColor: "#20232a",
+        borderColor: 'hsla(215, 67%, 34%, 1)',
         height: 40,
-        width: 150,
-        padding: 10
+        padding: 10,
+        color: 'white',
+        textAlign: 'center'
     }
 });
 

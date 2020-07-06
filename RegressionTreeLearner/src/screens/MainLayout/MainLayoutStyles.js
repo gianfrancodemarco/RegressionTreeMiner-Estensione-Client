@@ -11,13 +11,22 @@ const MainLayoutStyles = StyleSheet.create({
         alignItems: 'center'
     },
     header: {
+        fontWeight: 'bold',
         fontSize: 25,
-        color: 'hsla(203, 56%, 62%, 1)'
+        color: 'hsla(203, 56%, 50%, 1)'
     },
+
     credits: {
-        color: 'hsla(182, 24%, 86%, 1)',
+        fontFamily: 'sans-serif-light', //sans-serif-thin
+        //color: 'hsla(182, 24%, 86%, 1)',
+        fontStyle: 'italic',
+        fontSize: 20,
+        color: 'white',
         justifyContent: 'center'
     },
+    cardContainer: {
+        backgroundColor: '#000'
+    }
 })
 
 export default MainLayoutStyles

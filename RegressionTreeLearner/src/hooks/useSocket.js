@@ -10,20 +10,29 @@ export default function useSocket(){
     const [connected, setConnected] = useState(false)
     const [connecting, setConnecting] = useState(false)
     const [client, setClient] = useState(null)
+    const [error, setError] = useState(false)
     const [showToast, showToastWithGravity, showToastWithGravityAndOffset] = useToast()
 
     const connect = ([host, port]) => {
         setOptions({host, port})
+        disconnect()
         setConnecting(true)
-        setConnected(false)
-        setClient(null)
     }
 
-    //CONNECTING
+    const disconnect = () => {
+        if(client !== null){
+            client.destroy()
+        }
+
+        setClient(null)
+        setConnected(false)
+        setError(false)
+    }
+
+    //CONNECTION REQUESTED
     useEffect(() => {
-        if (!connected && connecting && client == null) {
+        if (connecting) {
             console.log(`[Attempting to connect ${options.host}:${options.port}]`)
-            setConnecting(true)
             setClient(TcpSocket.createConnection(options))
         }
     }, [connecting]);
@@ -33,7 +42,6 @@ export default function useSocket(){
         console.log("Checking connected")
         if(client !== null && client !== undefined){
             console.debug('Initializing client');
-            setConnected(true)
             setConnecting(false)
             initializeClient()
         }
@@ -47,32 +55,32 @@ export default function useSocket(){
     }
 
     const initializeClient = () => {
-        client.on('ready', function () {
+        client.on('connect', function () {
+            console.log(`on connect`)
             console.log(`CONNECTED TO ${options.host}:${options.port}`)
+            setConnected(true)
         });
 
         client.on('data', function (data) {
+            console.log(`on data`)
             const decoded = decodeMessage(data)
             console.log((`[RECEIVED from ${options.host}:${options.port}] \n ${decoded}`))
-            //showToastWithGravity(`[RECEIVED from ${options.host}:${options.port}] \n ${decoded}`)
         });
 
         client.on('error', function (error) {
+            console.log(`on error`)
             console.log(error);
-            client.end()
-            setClient(null)
-            setConnecting(false)
-            setConnected(false)
+            disconnect()
+            setError(true)
         });
 
         client.on('close', function () {
+            console.log(`on close`)
             console.log('closed');
-            setClient(null)
-            setConnecting(false)
-            setConnected(false)
+            disconnect()
+            setError(true)
         });
     }
-    const closeConnection = () => client.destroy()
 
-    return useMemo(() =>([connected, connect, sendMessage, client, closeConnection, options, setOptions]), [connected])
+    return useMemo(() =>([connected, connect, sendMessage, client, disconnect, error]), [connected, error])
 }

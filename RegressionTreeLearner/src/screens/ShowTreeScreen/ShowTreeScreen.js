@@ -1,18 +1,14 @@
 import React, {useState, useEffect, useContext} from 'react';
-import styles from "./ShowTreeScreenStyles";
 import {
     View,
     Button,
     Text,
-    SafeAreaView,
     StyleSheet,
     ScrollView
 } from 'react-native';
 import MainLayout from '../MainLayout/MainLayout';
 import {Context} from "../../hooks/globalState/Store";
 import {Actions} from 'react-native-router-flux'
-
-
 
 
 export default function ShowTreeScreen() {
@@ -33,18 +29,23 @@ export default function ShowTreeScreen() {
     return (
         <MainLayout customContainer={customContainer} customInnerContainer={customInnerContainer}>
             <View style={{flex: 0.9}}>
-                <Button title={'Show Rules'} onPress={() => setShowRules(!showRules)} />
-                <Button title={'Show Tree'}  onPress={() => setShowTree(!showTree)} />
+                <View style={{flexDirection: 'row'}}>
+                    <Button title={'Show Rules'} onPress={() => {
+                        if(!showRules) setShowTree(false)
+                        setShowRules(!showRules)
+                    }} />
+                    <Button title={'Show Tree'}  onPress={() => {
+                        if(!showTree) setShowRules(false)
+                        setShowTree(!showTree)
+                    }} />
+                </View>
+                <ScrollView>
+                    {showTree && <Text>{state.tree}</Text>}
+                    {showRules && <Text>{state.rules}</Text>}
+                </ScrollView>
+                <Button title={'Back'} onPress={() => Actions.replace('loadDataset')} />
 
-                {showRules && <ScrollView>
-                    <Text>{state.rules}</Text>
-                </ScrollView>}
-
-                {showTree && <ScrollView>
-                    <Text>{state.tree}</Text>
-                </ScrollView>}
             </View>
-            <Button title={'Back'} onPress={Actions.loadDataset} />
         </MainLayout>
     );
 }
