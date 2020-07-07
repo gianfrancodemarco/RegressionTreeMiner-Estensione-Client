@@ -12,7 +12,8 @@ import MainLayout from '../MainLayout/MainLayout';
 import {Actions} from 'react-native-router-flux'
 import {BoxShadow} from "react-native-shadow";
 
-export default function LoadDatasetScreen() {
+export default function LoadDatasetScreen(props) {
+    console.log(props)
 
     const [state, dispatch] = useContext(Context)
     const [connected, connect, sendMessage, client, closeConnection] = state.socket
@@ -21,7 +22,7 @@ export default function LoadDatasetScreen() {
     const [table, setTable] = useState(0)
 
 
-    const [step, setStep] = useState(1)
+    const [step, setStep] = useState(props.step ? props.step : 1)
     const [tableOptions, setTableOptions] = useState([])
     const [action, setAction] = useState()
 
