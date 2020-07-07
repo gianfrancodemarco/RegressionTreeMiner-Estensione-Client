@@ -38,9 +38,9 @@ export default function ConnectScreen() {
         }
     }, [connected])
 
-    const connectToServer = () => {
+    const connectToServer = (host) => {
         dispatch({type:"LOADING", payload: {isLoading:true}})
-        connect(defaultHost.split(":"))
+        connect(host.split(":"))
     }
 
 
@@ -50,7 +50,7 @@ export default function ConnectScreen() {
                 <View style={{width: buttonWidth}}>
                     <Button
                         {...hostButtonProps}
-                        onPress={() => connectToServer()}
+                        onPress={() => connectToServer(defaultHost)}
                         disabled={connected}
                     />
                 </View>
@@ -66,7 +66,7 @@ export default function ConnectScreen() {
                             value={host}
                             onChangeText={host => setHost(host)}
                         />
-                        <Button disabled={connected} onPress={() => connect(host.split((":")))} {...connectButtonProps}/>
+                        <Button disabled={connected} onPress={() => connectToServer(host)} {...connectButtonProps}/>
                     </View>
                 </View>
 

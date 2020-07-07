@@ -15,7 +15,7 @@ import {Actions} from 'react-native-router-flux'
 
 
 export default function ShowTreeScreen() {
-    const [state, dispatcher] = useContext(Context)
+    const [state, dispatch] = useContext(Context)
     const [showRules, setShowRules] = useState(true)
     const [showTree, setShowTree] = useState(false)
 
