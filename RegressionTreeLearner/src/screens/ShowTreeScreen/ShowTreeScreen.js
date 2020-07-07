@@ -1,11 +1,12 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
     View,
     Button,
     Text,
     StyleSheet,
     ScrollView,
-    Dimensions
+    Dimensions,
+    BackHandler
 } from 'react-native';
 import MainLayout from '../MainLayout/MainLayout';
 import {Context} from "../../hooks/globalState/Store";
@@ -72,6 +73,14 @@ export default function ShowTreeScreen() {
         right: 0
     }
 
+    const backHandler = () => {
+        BackHandler.removeEventListener('hardwareBackPress', backHandler)
+        Actions.replace('loadDataset')
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', backHandler)
+    }, [])
 
     return (
         <MainLayout customContainer={customContainer}>
@@ -80,9 +89,9 @@ export default function ShowTreeScreen() {
                             <Button {...buttonRules}  onPress={clickRules} />
                             <Button {...buttonTree}  onPress={clickTree} />
                         </View>
-                        <View style={buttonBackStyles}>
+                        {/*<View style={buttonBackStyles}>
                             <Button {...buttonBack} onPress={() => Actions.replace('loadDataset', {step: 3} )} />
-                        </View>
+                        </View>*/}
                 </View>
             <BoxShadow setting={shadowContainer}>
                 <ScrollView style={{flex: 1}}>

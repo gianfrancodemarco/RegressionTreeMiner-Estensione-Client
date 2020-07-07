@@ -2,7 +2,8 @@ import React, {useState, useEffect, useContext} from 'react';
 import styles, {shadowContainer} from "./LoadDatasetScreenStyles";
 import {
     View,
-    Button
+    Button,
+    BackHandler
 } from 'react-native';
 import {DATASETOPTION, LEARNOPTIONS} from '../../utils/Dataset';
 import RadioForm from 'react-native-simple-radio-button';
@@ -13,7 +14,6 @@ import {Actions} from 'react-native-router-flux'
 import {BoxShadow} from "react-native-shadow";
 
 export default function LoadDatasetScreen(props) {
-    console.log(props)
 
     const [state, dispatch] = useContext(Context)
     const [connected, connect, sendMessage, client, closeConnection] = state.socket
@@ -25,6 +25,15 @@ export default function LoadDatasetScreen(props) {
     const [step, setStep] = useState(props.step ? props.step : 1)
     const [tableOptions, setTableOptions] = useState([])
     const [action, setAction] = useState()
+
+    const backHandler = () => {
+        Actions.replace('connectScreen')
+        BackHandler.removeEventListener('hardwareBackPress', backHandler)
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', backHandler)
+    }, [])
 
     //ADD TABLE LISTENER
     const tableReceivedObserver = (data) => {
@@ -70,6 +79,7 @@ export default function LoadDatasetScreen(props) {
             console.log('Received rules', decoded)
             client.off('data', rulesReceiverObserver)
             dispatch({type: "RULES", payload: {rules: decoded.replace(identifier, '')}})
+            BackHandler.removeEventListener('hardwareBackPress', backHandler)
             Actions.replace('showTree')
         }
     }

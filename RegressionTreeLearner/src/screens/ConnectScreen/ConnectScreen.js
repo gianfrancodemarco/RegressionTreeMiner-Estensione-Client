@@ -5,7 +5,8 @@ import {
     SafeAreaView,
     Button,
     View,
-    TextInput
+    TextInput,
+    StatusBar
 } from 'react-native';
 import {defaultLabelStyles} from '../GenericStyles'
 import useSocket from "../../hooks/useSocket";
@@ -44,6 +45,7 @@ export default function ConnectScreen() {
 
 
     return (
+
             <MainLayout>
                 <View style={{width: buttonWidth}}>
                     <Button

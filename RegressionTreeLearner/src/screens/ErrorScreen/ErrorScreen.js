@@ -13,7 +13,7 @@ export default function ErrorScreen() {
     console.trace()
 
     return (
-            <MainLayout>
+            <MainLayout backgroud={require('../../assets/121411.jpg')}>
                 <Text style={textStyle.style}>An error occured acquiring socket connection</Text>
                 <Button
                     {...backToHome}
@@ -25,13 +25,14 @@ export default function ErrorScreen() {
 
 const backToHome = {
     color: 'hsla(215, 67%, 34%, 1)',
-    title: "Go to connect screen",
+    title: "Go back to connect screen",
 }
 
 const textStyle = StyleSheet.create({
     style: {
         fontWeight: 'bold',
         fontStyle: 'italic',
+        marginTop: 150,
         marginBottom: 10,
         color:'white',
         fontSize: 15
