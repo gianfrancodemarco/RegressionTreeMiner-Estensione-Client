@@ -35,6 +35,10 @@ export default function LoadDatasetScreen(props) {
     }
 
     useEffect(() => {
+        console.log('Selection', {selection})
+    }, [selection])
+
+    useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', backHandler)
         client.on('data', tableReceivedObserver)
     }, [])
@@ -47,7 +51,7 @@ export default function LoadDatasetScreen(props) {
 
         if (decoded && decoded.indexOf(MESSAGES.DATASETS) !== -1) {
             let options = decoded.replace(MESSAGES.DATASETS, "").split(";")
-            options = options.map((el, index) => ({"label": el.replace('.dmp', ''), "value": index}))
+            options = options.map((el, index) => ({"label": el.replace('.dmp', '').trim(), "value": index}))
             setOptions(options)
             client.off('data', tableReceivedObserver)
             client.on('data', treeReceivedObserver)
@@ -84,6 +88,7 @@ export default function LoadDatasetScreen(props) {
     const sendSelection = () => {
         showLoading(true)
         sendMessage(selection.toString(), () => setStep(step + 1))
+        setSelection(0)
     }
 
     const getRadioButton = () =>  {
@@ -94,7 +99,7 @@ export default function LoadDatasetScreen(props) {
         return options ? <RadioForm
             {...radioGroupStyle}
             labelStyle={{fontFamily:'sans-serif-light'}}
-            buttonSize={25}
+            buttonSize={30}
             radio_props={tmpOptions.map(el => ({...el, label: el.label.toUpperCase()}))}
             initial={0}
             onPress={setSelection}

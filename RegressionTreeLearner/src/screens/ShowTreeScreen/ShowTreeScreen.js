@@ -56,6 +56,7 @@ export default function ShowTreeScreen() {
     }
 
     const backHandler = () => {
+        sendMessage(MESSAGES.INTERRUPT_PREDICTION)
         BackHandler.removeEventListener('hardwareBackPress', backHandler)
         Actions.replace('loadDataset')
     }
