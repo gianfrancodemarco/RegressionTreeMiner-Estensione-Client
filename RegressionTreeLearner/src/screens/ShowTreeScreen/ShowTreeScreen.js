@@ -12,6 +12,9 @@ import MainLayout from '../MainLayout/MainLayout';
 import {Context} from "../../hooks/globalState/Store";
 import {BoxShadow} from "react-native-shadow";
 import {Actions} from 'react-native-router-flux'
+import {decodeMessage} from "../../utils/Utils";
+import RadioForm from "react-native-simple-radio-button";
+import {MESSAGES} from "../../utils/Dataset";
 
 
 export default function ShowTreeScreen() {
@@ -20,17 +23,30 @@ export default function ShowTreeScreen() {
     const [showTree, setShowTree] = useState(false)
 
 
+    //PREDICT CLASS
+    const [connected, connect, sendMessage, client, closeConnection] = state.socket
+    const [showPredict, setShowPredict] = useState(false)
+    const [options, setOptions] = useState()
+
     const customContainer = StyleSheet.create({
         flexGrow: 0.5
     })
 
+    const clickPredict = () => {
+        setShowTree(false)
+        setShowRules(false)
+        setShowPredict(true)
+    }
+
 
     const clickRules = () => {
         setShowTree(false)
+        setShowPredict(false)
         setShowRules(true)
     }
 
     const clickTree = () => {
+        setShowPredict(false)
         setShowRules(false)
         setShowTree(true)
     }
@@ -61,16 +77,9 @@ export default function ShowTreeScreen() {
         color: showTree ? activeColor : 'hsla(220, 100%, 25%, 0.7)'
     }
 
-    const buttonBack = {
-        title: 'Back',
-        color: 'hsla(220, 100%, 25%, 0.9)',
-    }
-
-    const buttonBackStyles = {
-        color: 'white',
-        width: 100,
-        position: 'absolute',
-        right: 0
+    const buttonPredict =  {
+        title: 'Predict Class',
+        color: showPredict ? activeColor : 'hsla(220, 100%, 25%, 0.7)'
     }
 
     const backHandler = () => {
@@ -80,7 +89,31 @@ export default function ShowTreeScreen() {
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', backHandler)
+        sendMessage('[START PREDICTION]')
+        client.on('data', predictClassObserver)
     }, [])
+
+
+    const predictClassObserver = (data) => {
+        const decoded = decodeMessage(data)
+
+        if (decoded && decoded.indexOf(MESSAGES.QUERY) !== -1)
+            setOptions(decoded.replace(MESSAGES.QUERY, '').trim().split('\n').map(el => ({label: el})))
+
+
+        if(decoded && decoded.indexOf(MESSAGES.END) !== -1){
+
+        }
+    }
+
+
+    const predictForm = <>
+        <RadioForm
+            radio_props={options}
+            initial={0}
+            onPress={(value) => {}}
+        />
+    </>
 
     return (
         <MainLayout customContainer={customContainer}>
@@ -88,6 +121,7 @@ export default function ShowTreeScreen() {
                         <View style={{flexDirection:'row', color: 'white'}}>
                             <Button {...buttonRules}  onPress={clickRules} />
                             <Button {...buttonTree}  onPress={clickTree} />
+                            <Button {...buttonPredict}  onPress={clickPredict} />
                         </View>
                         {/*<View style={buttonBackStyles}>
                             <Button {...buttonBack} onPress={() => Actions.replace('loadDataset', {step: 3} )} />
@@ -97,6 +131,7 @@ export default function ShowTreeScreen() {
                 <ScrollView style={{flex: 1}}>
                     {showTree && <Text style={white}>{state.tree}</Text>}
                     {showRules && <Text style={white}>{state.rules}</Text>}
+                    {showPredict && predictForm}
                 </ScrollView>
             </BoxShadow>
         </MainLayout>

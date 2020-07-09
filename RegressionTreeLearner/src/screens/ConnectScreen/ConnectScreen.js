@@ -11,7 +11,7 @@ import {
 import {defaultLabelStyles} from '../GenericStyles'
 import useSocket from "../../hooks/useSocket";
 import {Actions} from 'react-native-router-flux'
-import {Context} from '../../hooks/globalState/Store';
+import {Context, showLoading} from '../../hooks/globalState/Store';
 import MainLayout from '../MainLayout/MainLayout';
 
 export default function ConnectScreen() {
@@ -24,7 +24,7 @@ export default function ConnectScreen() {
 
     useEffect(() => {
         if(error){
-            dispatch({type:"LOADING", payload: {isLoading:false}})
+            showLoading(false)
             Actions.replace('error')
         }
     }, [error])
@@ -33,13 +33,13 @@ export default function ConnectScreen() {
         console.log({connected})
         if(connected){
             dispatch({type:"UPDATE_SOCKET", payload:{socket: [connected, connect, sendMessage, client, closeConnection]}})
-            dispatch({type:"LOADING", payload: {isLoading: false}})
+            showLoading(false)
             Actions.replace('loadDataset')
         }
     }, [connected])
 
     const connectToServer = (host) => {
-        dispatch({type:"LOADING", payload: {isLoading:true}})
+        showLoading(true)
         connect(host.split(":"))
     }
 

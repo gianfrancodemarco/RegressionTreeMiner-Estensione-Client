@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import {LEARNOPTIONS} from '../../utils/Dataset';
 import RadioForm from 'react-native-simple-radio-button';
-import {Context} from '../../hooks/globalState/Store';
+import {Context, showLoading} from '../../hooks/globalState/Store';
 import {decodeMessage} from '../../utils/Utils';
 import MainLayout from '../MainLayout/MainLayout';
 
@@ -37,7 +37,7 @@ export default function LoadDatasetScreen() {
             options = options.map((el, index) => ({"label":el.replace('.dmp', ''), "value": index}))
             setTableOptions(options)
             client.off('data', tableReceivedObserver)
-            dispatch({type:"LOADING", payload: {isLoading:false}})
+           showLoading(false)
         }
     }
 
@@ -47,12 +47,12 @@ export default function LoadDatasetScreen() {
     //////////////////////////////////////////////////////////////////////////////
 
     const sendMode = () => {
-        dispatch({type:"LOADING", payload: {isLoading:true}})
+        showLoading(true)
         sendMessage(learnOption.toString(), () => setStep(2))
     }
 
     const sendDataset = () => {
-        dispatch({type:"LOADING", payload: {isLoading:true}})
+        showLoading(true)
         sendMessage(table.toString())
     }
 

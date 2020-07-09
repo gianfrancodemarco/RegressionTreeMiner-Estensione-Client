@@ -20,6 +20,14 @@ export const DATASETOPTION = [
     }
 ]
 
+export const MESSAGES = {
+    DATASETS, '[DATASETS]',
+    RULES: '[RULES]',
+    TREE: '[TREE]',
+    QUERY: '[QUERY]',
+    END: '[END]'
+}
+
 
 /*style={{fontFamily:'normal'}}
 style={{fontFamily:'notoserif'}}

@@ -8,8 +8,10 @@ const initialState = {
     isLoading: false,
 };
 
+let tmpDispatch
 const Store = ({ children }) => {
     const [state, dispatch] = useReducer(Reducer, initialState);
+    tmpDispatch = dispatch
     return (
         <Context.Provider value={[state, dispatch]}>
             {children}
@@ -19,3 +21,5 @@ const Store = ({ children }) => {
 
 export const Context = createContext(initialState);
 export default Store;
+
+export const showLoading = (loading) => tmpDispatch({ type: "LOADING", payload: { isLoading: loading } })

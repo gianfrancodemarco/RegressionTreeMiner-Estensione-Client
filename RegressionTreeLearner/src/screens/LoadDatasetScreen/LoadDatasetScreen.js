@@ -5,9 +5,9 @@ import {
     Button,
     BackHandler
 } from 'react-native';
-import {DATASETOPTION, LEARNOPTIONS} from '../../utils/Dataset';
+import {DATASETOPTION, LEARNOPTIONS, MESSAGES} from '../../utils/Dataset';
 import RadioForm from 'react-native-simple-radio-button';
-import {Context} from '../../hooks/globalState/Store';
+import {Context, showLoading} from '../../hooks/globalState/Store';
 import {decodeMessage} from '../../utils/Utils';
 import MainLayout from '../MainLayout/MainLayout';
 import {Actions} from 'react-native-router-flux'
@@ -18,13 +18,10 @@ export default function LoadDatasetScreen(props) {
     const [state, dispatch] = useContext(Context)
     const [connected, connect, sendMessage, client, closeConnection] = state.socket
 
-    const [learnOption, setLearnOption] = useState(0)
-    const [table, setTable] = useState(0)
-
-
     const [step, setStep] = useState(props.step ? props.step : 1)
-    const [tableOptions, setTableOptions] = useState([])
-    const [action, setAction] = useState()
+    const [options, setOptions] = useState([])
+    const [selection, setSelection] = useState(0)
+
 
     const backHandler = () => {
         Actions.replace('connectScreen')
@@ -38,18 +35,16 @@ export default function LoadDatasetScreen(props) {
     //ADD TABLE LISTENER
     const tableReceivedObserver = (data) => {
         const decoded = decodeMessage(data)
-        const identifier = "[DATASETS]"
 
-        if (decoded && decoded.indexOf(identifier) !== -1) {
-            let options = decoded.replace(identifier, "").split(";")
+        if (decoded && decoded.indexOf(MESSAGES.DATASETS) !== -1) {
+            let options = decoded.replace(MESSAGES.DATASETS, "").split(";")
             options = options.map((el, index) => ({"label": el.replace('.dmp', ''), "value": index}))
-            setTableOptions(options)
+            setOptions(options)
             client.off('data', tableReceivedObserver)
             client.on('data', treeReceivedObserver)
-            dispatch({type: "LOADING", payload: {isLoading: false}})
+            showLoading(false)
         }
     }
-
     useEffect(() => {
         client.on('data', tableReceivedObserver)
     }, [])
@@ -58,41 +53,31 @@ export default function LoadDatasetScreen(props) {
     //ADD TREE LISTENER
     const treeReceivedObserver = (data) => {
         const decoded = decodeMessage(data)
-        const identifier = "[TREE]"
 
-        if (decoded && decoded.indexOf(identifier) !== -1) {
+        if (decoded && decoded.indexOf(MESSAGES.TREE) !== -1) {
             client.off('data', tableReceivedObserver)
-            dispatch({type: "TREE", payload: {tree: decoded.replace(identifier, '')}})
+            dispatch({type: "TREE", payload: {tree: decoded.replace(MESSAGES.TREE, '')}})
             client.on('data', rulesReceiverObserver)
-            dispatch({type: "LOADING", payload: {isLoading: false}})
         }
     }
-
     //////////////////////////////////////////////////////////////////////////////
 
-    //ADD TREE LISTENER
+    //ADD RULES LISTENER
     const rulesReceiverObserver = (data) => {
         const decoded = decodeMessage(data)
-        const identifier = "[RULES]"
 
-        if (decoded && decoded.indexOf(identifier) !== -1) {
-            console.log('Received rules', decoded)
+        if (decoded && decoded.indexOf(MESSAGES.RULES) !== -1) {
             client.off('data', rulesReceiverObserver)
-            dispatch({type: "RULES", payload: {rules: decoded.replace(identifier, '')}})
+            dispatch({type: "RULES", payload: {rules: decoded.replace(MESSAGES.TREE, '')}})
+            showLoading(false)
             BackHandler.removeEventListener('hardwareBackPress', backHandler)
             Actions.replace('showTree')
         }
     }
 
-
-    const sendMode = () => {
-        dispatch({type: "LOADING", payload: {isLoading: true}})
-        sendMessage(learnOption.toString(), () => setStep(2))
-    }
-
-    const sendDataset = () => {
-        //dispatch({type:"LOADING", payload: {isLoading:true}})
-        sendMessage(table.toString())
+    const sendSelection = () => {
+        showLoading(true)
+        sendMessage(selection.toString(), () => setStep(step + 1))
     }
 
     const radioGroupStyle = {
@@ -119,21 +104,17 @@ export default function LoadDatasetScreen(props) {
     }
 
     const getRadioButton = () =>  {
-        let options
+        let tmpOptions
 
-        if (step === 1) options = LEARNOPTIONS
-        else if (step === 2) options = tableOptions
-        else options = DATASETOPTION
+        tmpOptions = step === 1 ? LEARNOPTIONS : options
 
         return options ? <RadioForm
             {...radioGroupStyle}
             labelStyle={{fontFamily:'sans-serif-light'}}
             buttonSize={25}
-            radio_props={options.map(el => ({...el, label: el.label.toUpperCase()}))}
+            radio_props={tmpOptions.map(el => ({...el, label: el.label.toUpperCase()}))}
             initial={0}
-            onPress={(value) => {
-                setLearnOption(value)
-            }}
+            onPress={setSelection}
         />: <></>
 
     }
@@ -145,7 +126,7 @@ export default function LoadDatasetScreen(props) {
                     {getRadioButton()}
 
                     <View style={nextButtonContainer}>
-                        <Button {...nextButton} onPress={() => step === 1 ? sendMode() : sendDataset()}/>
+                        <Button {...nextButton} onPress={() => {sendSelection()}}/>
                     </View>
 
                 </View>
