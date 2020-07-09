@@ -15,6 +15,14 @@ import {Actions} from 'react-native-router-flux'
 import {decodeMessage} from "../../utils/Utils";
 import RadioForm from "react-native-simple-radio-button";
 import {MESSAGES} from "../../utils/Dataset";
+import {
+    customContainer,
+    getButtonPredict,
+    getButtonRules,
+    getButtonTree,
+    white
+} from "./ShowTreeScreenStyles";
+import {radioGroupStyle, shadowContainer, shadowContainerInnerView} from "../LoadDatasetScreen/LoadDatasetScreenStyles";
 
 
 export default function ShowTreeScreen() {
@@ -27,17 +35,13 @@ export default function ShowTreeScreen() {
     const [connected, connect, sendMessage, client, closeConnection] = state.socket
     const [showPredict, setShowPredict] = useState(false)
     const [options, setOptions] = useState()
-
-    const customContainer = StyleSheet.create({
-        flexGrow: 0.5
-    })
+    const [split, setSplit] = useState(0)
 
     const clickPredict = () => {
         setShowTree(false)
         setShowRules(false)
         setShowPredict(true)
     }
-
 
     const clickRules = () => {
         setShowTree(false)
@@ -51,37 +55,6 @@ export default function ShowTreeScreen() {
         setShowTree(true)
     }
 
-    const shadowContainer = {
-        width: Dimensions.get('screen').width,
-        height: Dimensions.get('screen').height * 0.45,
-        color: "#000",
-        border: 10,
-        radius: 1,
-        opacity: 0.7,
-        x: 0,
-        y: -3,
-        style: {
-            marginVertical: 5, padding: 15
-        }
-    }
-
-    const white = {color: 'white'}
-    const activeColor = 'hsla(220, 100%, 30%, 0.3)'
-    const buttonRules = {
-        title: 'Show Rules',
-        color: showRules ? activeColor : 'hsla(220, 100%, 25%, 0.7)'
-    }
-
-    const buttonTree =  {
-        title: 'Show Tree',
-        color: showTree ? activeColor : 'hsla(220, 100%, 25%, 0.7)'
-    }
-
-    const buttonPredict =  {
-        title: 'Predict Class',
-        color: showPredict ? activeColor : 'hsla(220, 100%, 25%, 0.7)'
-    }
-
     const backHandler = () => {
         BackHandler.removeEventListener('hardwareBackPress', backHandler)
         Actions.replace('loadDataset')
@@ -89,7 +62,7 @@ export default function ShowTreeScreen() {
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', backHandler)
-        sendMessage('[START PREDICTION]')
+        sendMessage(MESSAGES.START_PREDICTION)
         client.on('data', predictClassObserver)
     }, [])
 
@@ -97,8 +70,12 @@ export default function ShowTreeScreen() {
     const predictClassObserver = (data) => {
         const decoded = decodeMessage(data)
 
-        if (decoded && decoded.indexOf(MESSAGES.QUERY) !== -1)
-            setOptions(decoded.replace(MESSAGES.QUERY, '').trim().split('\n').map(el => ({label: el})))
+        if (decoded && decoded.indexOf(MESSAGES.QUERY) !== -1){
+            let options = decoded.replace(MESSAGES.QUERY, '').trim().split('\n').map(el => ({label: el}))
+            setOptions(options.map((el, index )=> ({
+                value: index,
+                label: el.label.substring(el.label.indexOf(':') + 1, el.label.length)})))
+        }
 
 
         if(decoded && decoded.indexOf(MESSAGES.END) !== -1){
@@ -107,33 +84,35 @@ export default function ShowTreeScreen() {
     }
 
 
-    const predictForm = <>
-        <RadioForm
-            radio_props={options}
-            initial={0}
-            onPress={(value) => {}}
-        />
-    </>
+    const predictForm =
+            <RadioForm
+                {...radioGroupStyle}
+                radio_props={options}
+                initial={0}
+                onPress={setSplit}
+            />
+
 
     return (
         <MainLayout customContainer={customContainer}>
                 <View style={{width: Dimensions.get('window').width}}>
-                        <View style={{flexDirection:'row', color: 'white'}}>
-                            <Button {...buttonRules}  onPress={clickRules} />
-                            <Button {...buttonTree}  onPress={clickTree} />
-                            <Button {...buttonPredict}  onPress={clickPredict} />
+                        <View style={{flexDirection:'row', ...white}}>
+                            <Button {...getButtonRules(showRules)}  onPress={clickRules} />
+                            <Button {...getButtonTree(showTree)}  onPress={clickTree} />
+                            <Button {...getButtonPredict(showPredict)}  onPress={clickPredict} />
                         </View>
-                        {/*<View style={buttonBackStyles}>
-                            <Button {...buttonBack} onPress={() => Actions.replace('loadDataset', {step: 3} )} />
-                        </View>*/}
                 </View>
-            <BoxShadow setting={shadowContainer}>
-                <ScrollView style={{flex: 1}}>
-                    {showTree && <Text style={white}>{state.tree}</Text>}
-                    {showRules && <Text style={white}>{state.rules}</Text>}
-                    {showPredict && predictForm}
-                </ScrollView>
+            <BoxShadow setting={{...shadowContainer, height: fullHeight}}>
+                <View style={shadowContainerInnerView}>
+                    <ScrollView>
+                        {showTree && <Text style={white}>{state.tree}</Text>}
+                        {showRules && <Text style={white}>{state.rules}</Text>}
+                        {showPredict && predictForm}
+                    </ScrollView>
+                </View>
             </BoxShadow>
         </MainLayout>
     );
 }
+
+const fullHeight = Dimensions.get('screen').height * 0.50

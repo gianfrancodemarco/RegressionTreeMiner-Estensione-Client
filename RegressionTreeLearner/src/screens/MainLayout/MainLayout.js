@@ -6,11 +6,11 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function MainLayout(props) {
 
-    const [state, dispatch] = useContext(Context);
+    const [state] = useContext(Context);
     return (
         <>
             <StatusBar hidden />
-            <ImageBackground source={props.backgroud ? props.backgroud : require('../../assets/121410.jpg')}
+            <ImageBackground source={props.background ? props.background : require('../../assets/121410.jpg')}
                              style={{width: Dimensions.get('window').width, height: Dimensions.get('screen').height}}>
                 <SafeAreaView style={MainLayoutStyles.container}>
                     <View style={props.customContainer ? {...MainLayoutStyles.innerContainer, ...props.customContainer} : MainLayoutStyles.innerContainer}>
@@ -31,7 +31,7 @@ export default function MainLayout(props) {
                         ) :
                         (
                             <View
-                                style={props.customInnerContainer ? props.customInnerContainer : MainLayoutStyles.innerContainer}>
+                                style={MainLayoutStyles.innerContainer}>
                                 {props.children}
                             </View>
                         )

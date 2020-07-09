@@ -2,11 +2,9 @@ import React, {useState, useEffect, useContext} from 'react';
 import ConnectScreenStyles from "./ConnectScreenStyles";
 import {
     Text,
-    SafeAreaView,
     Button,
     View,
-    TextInput,
-    StatusBar
+    TextInput
 } from 'react-native';
 import {defaultLabelStyles} from '../GenericStyles'
 import useSocket from "../../hooks/useSocket";
@@ -16,7 +14,7 @@ import MainLayout from '../MainLayout/MainLayout';
 
 export default function ConnectScreen() {
 
-    const [state, dispatch] = useContext(Context)
+    const [, dispatch] = useContext(Context)
 
     const defaultHost = "192.168.1.156:8080"
     const [host, setHost] = useState("192.168.1.156:8080")
@@ -43,9 +41,7 @@ export default function ConnectScreen() {
         connect(host.split(":"))
     }
 
-
     return (
-
             <MainLayout>
                 <View style={{width: buttonWidth}}>
                     <Button

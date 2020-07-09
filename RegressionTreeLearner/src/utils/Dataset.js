@@ -21,7 +21,8 @@ export const DATASETOPTION = [
 ]
 
 export const MESSAGES = {
-    DATASETS, '[DATASETS]',
+    START_PREDICTION : '[START PREDICTION]',
+    DATASETS: '[DATASETS]',
     RULES: '[RULES]',
     TREE: '[TREE]',
     QUERY: '[QUERY]',

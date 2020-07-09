@@ -1,11 +1,17 @@
 import React, {useState, useEffect, useContext} from 'react';
-import styles, {shadowContainer} from "./LoadDatasetScreenStyles";
+import styles, {
+    getNextButton,
+    nextButtonContainer,
+    radioGroupStyle,
+    shadowContainer,
+    shadowContainerInnerView
+} from "./LoadDatasetScreenStyles";
 import {
     View,
     Button,
     BackHandler
 } from 'react-native';
-import {DATASETOPTION, LEARNOPTIONS, MESSAGES} from '../../utils/Dataset';
+import {LEARNOPTIONS, MESSAGES} from '../../utils/Dataset';
 import RadioForm from 'react-native-simple-radio-button';
 import {Context, showLoading} from '../../hooks/globalState/Store';
 import {decodeMessage} from '../../utils/Utils';
@@ -30,7 +36,10 @@ export default function LoadDatasetScreen(props) {
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', backHandler)
+        client.on('data', tableReceivedObserver)
     }, [])
+
+    //FLOW: tables -> tree -> rules ---> Tree Screen
 
     //ADD TABLE LISTENER
     const tableReceivedObserver = (data) => {
@@ -45,9 +54,6 @@ export default function LoadDatasetScreen(props) {
             showLoading(false)
         }
     }
-    useEffect(() => {
-        client.on('data', tableReceivedObserver)
-    }, [])
     //////////////////////////////////////////////////////////////////////////////
 
     //ADD TREE LISTENER
@@ -68,7 +74,7 @@ export default function LoadDatasetScreen(props) {
 
         if (decoded && decoded.indexOf(MESSAGES.RULES) !== -1) {
             client.off('data', rulesReceiverObserver)
-            dispatch({type: "RULES", payload: {rules: decoded.replace(MESSAGES.TREE, '')}})
+            dispatch({type: "RULES", payload: {rules: decoded.replace(MESSAGES.RULES, '')}})
             showLoading(false)
             BackHandler.removeEventListener('hardwareBackPress', backHandler)
             Actions.replace('showTree')
@@ -78,29 +84,6 @@ export default function LoadDatasetScreen(props) {
     const sendSelection = () => {
         showLoading(true)
         sendMessage(selection.toString(), () => setStep(step + 1))
-    }
-
-    const radioGroupStyle = {
-        flexGrow: 0.8,
-        minWidth: 0.6,
-        labelColor: 'white',
-        selectedLabelColor: 'white',
-        buttonColor: 'hsla(203, 56%, 50%, 1)',
-        selectedButtonColor: 'hsla(203, 56%, 50%, 1)',
-        marginTop: 10
-    }
-
-    const nextButton = {
-        title: 'Next',
-        disabled: !connected,
-        color: 'hsla(215, 67%, 34%, 1)'
-    }
-
-    const nextButtonContainer = {
-        position: 'absolute',
-        bottom: 30,
-        width: 200,
-        alignSelf: 'center',
     }
 
     const getRadioButton = () =>  {
@@ -122,13 +105,11 @@ export default function LoadDatasetScreen(props) {
     return (
         <MainLayout style={styles.container}>
             <BoxShadow setting={shadowContainer}>
-                <View style={{padding: 15, flex: 1}}>
+                <View style={shadowContainerInnerView}>
                     {getRadioButton()}
-
                     <View style={nextButtonContainer}>
-                        <Button {...nextButton} onPress={() => {sendSelection()}}/>
+                        <Button {...getNextButton(connected)} onPress={() => {sendSelection()}}/>
                     </View>
-
                 </View>
             </BoxShadow>
         </MainLayout>

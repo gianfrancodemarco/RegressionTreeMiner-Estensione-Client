@@ -13,7 +13,7 @@ export default function ErrorScreen() {
     console.trace()
 
     return (
-            <MainLayout backgroud={require('../../assets/121411.jpg')}>
+            <MainLayout background={require('../../assets/121411.jpg')}>
                 <Text style={textStyle.style}>An error occured acquiring socket connection</Text>
                 <Button
                     {...backToHome}

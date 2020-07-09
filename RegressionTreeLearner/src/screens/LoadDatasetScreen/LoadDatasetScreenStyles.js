@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet, StatusBar, Platform} from "react-native";
+import {Dimensions, StyleSheet} from "react-native";
 
 const styles = StyleSheet.create({
     innerContainer: {
@@ -15,17 +15,44 @@ const styles = StyleSheet.create({
     },
 });
 
+export const shadowContainerInnerView = {padding: 35, flex: 1}
+
 
 export const shadowContainer = {
-    width: Dimensions.get('screen').width * 0.85,
-    height: Dimensions.get('screen').height * 0.35,
+    width: Dimensions.get('screen').width,
+    height: Dimensions.get('screen').height * 0.45,
     color: "#000",
     border: 10,
     radius: 1,
-    opacity: 0.3,
+    opacity: 0.5,
     x: 0,
-    y: -10,
+    y: -2,
     style: {marginVertical: 5}
+}
+
+
+
+export const radioGroupStyle = {
+    flexGrow: 0.8,
+    minWidth: 0.6,
+    labelColor: 'white',
+    selectedLabelColor: 'white',
+    buttonColor: 'hsla(203, 56%, 50%, 1)',
+    selectedButtonColor: 'hsla(203, 56%, 50%, 1)',
+    marginTop: 10
+}
+
+export const getNextButton = (connected) => ({
+    title: 'Next',
+    disabled: !connected,
+    color: 'hsla(215, 67%, 34%, 1)'
+})
+
+export const nextButtonContainer = {
+    position: 'absolute',
+    bottom: 30,
+    width: 200,
+    alignSelf: 'center',
 }
 
 

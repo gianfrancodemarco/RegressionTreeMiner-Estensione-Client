@@ -1,6 +1,6 @@
 import React from 'react';
 import {SafeAreaView, View, StyleSheet} from 'react-native'
-import Tree from '../../components/Tree';
+import Tree from './Tree';
 
 export default function ShowTreeScreenOld() {
 
