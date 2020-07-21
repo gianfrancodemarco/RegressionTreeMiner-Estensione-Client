@@ -18,25 +18,39 @@ import {decodeMessage} from '../../utils/Utils';
 import MainLayout from '../MainLayout/MainLayout';
 import {Actions} from 'react-native-router-flux'
 import {BoxShadow} from "react-native-shadow";
+import useGlobalState from "../../hooks/globalState/useGlobalState";
+import useSocket from "../../hooks/useSocket";
 
 export default function LoadDatasetScreen(props) {
 
+    useEffect(() => console.log('Entering LoadDatasetScreen'), [])
+
     const [state, dispatch] = useContext(Context)
-    const [connected, connect, sendMessage, client, closeConnection] = state.socket
+
+    //useGlobalState -> RICOSTRUISCE LA SOCKET PARTENDO DA QUELLA CONSERVATA NELLO STATO
+    const [connected, connect, sendMessage, client, closeConnection, error] = useGlobalState(useSocket(
+        {
+                connected: state.socket[0],
+                error: state.socket[5],
+                client: state.socket[3]
+        }), "UPDATE_SOCKET", "socket")
+
 
     const [step, setStep] = useState(props.step ? props.step : 1)
     const [options, setOptions] = useState([])
     const [selection, setSelection] = useState(0)
 
+    useEffect(() => {
+        if(error){
+            showLoading(false)
+            Actions.replace('error')
+        }
+    }, [error])
 
     const backHandler = () => {
         Actions.replace('connectScreen')
         BackHandler.removeEventListener('hardwareBackPress', backHandler)
     }
-
-    useEffect(() => {
-        console.log('Selection', {selection})
-    }, [selection])
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', backHandler)

@@ -9,7 +9,7 @@ import {
     BackHandler
 } from 'react-native';
 import MainLayout from '../MainLayout/MainLayout';
-import {Context} from "../../hooks/globalState/Store";
+import {Context, showLoading} from "../../hooks/globalState/Store";
 import {BoxShadow} from "react-native-shadow";
 import {Actions} from 'react-native-router-flux'
 import {decodeMessage} from "../../utils/Utils";
@@ -23,6 +23,8 @@ import {
     white
 } from "./ShowTreeScreenStyles";
 import {radioGroupStyle, shadowContainer, shadowContainerInnerView} from "../LoadDatasetScreen/LoadDatasetScreenStyles";
+import useGlobalState from "../../hooks/globalState/useGlobalState";
+import useSocket from "../../hooks/useSocket";
 
 
 export default function ShowTreeScreen() {
@@ -31,11 +33,25 @@ export default function ShowTreeScreen() {
     const [showTree, setShowTree] = useState(false)
 
 
+    //useGlobalState -> RICOSTRUISCE LA SOCKET PARTENDO DA QUELLA CONSERVATA NELLO STATO
+    const [connected, connect, sendMessage, client, closeConnection, error] = useGlobalState(useSocket(
+        {
+            connected: state.socket[0],
+            error: state.socket[5],
+            client: state.socket[3]
+        }), "UPDATE_SOCKET", "socket")
+
     //PREDICT CLASS
-    const [connected, connect, sendMessage, client, closeConnection] = state.socket
     const [showPredict, setShowPredict] = useState(false)
     const [options, setOptions] = useState()
     const [split, setSplit] = useState(0)
+
+    useEffect(() => {
+        if(error){
+            showLoading(false)
+            Actions.replace('error')
+        }
+    }, [error])
 
     const clickPredict = () => {
         setShowTree(false)

@@ -4,7 +4,7 @@ import useToast from './useToast';
 import {decodeMessage} from '../utils/Utils';
 
 
-export default function useSocket(){
+export default function useSocket(props){
 
     const [options, setOptions] = useState({})
     const [connected, setConnected] = useState(false)
@@ -12,6 +12,12 @@ export default function useSocket(){
     const [client, setClient] = useState(null)
     const [error, setError] = useState(false)
     const [showToast, showToastWithGravity, showToastWithGravityAndOffset] = useToast()
+
+    if(props && props.client && client === null){
+        setClient(props.client)
+        setConnected(props.connected ? props.connected : false)
+        setError(props.error ? props.error : false)
+    }
 
     const connect = ([host, port]) => {
         setOptions({host, port})
@@ -39,7 +45,7 @@ export default function useSocket(){
 
     //WHEN CONNECTED
     useEffect(() => {
-        console.log("Checking connected")
+        //console.log("Checking connected")
         if(client !== null && client !== undefined){
             console.debug('Initializing client');
             setConnecting(false)
@@ -56,31 +62,32 @@ export default function useSocket(){
 
     const initializeClient = () => {
         client.on('connect', function () {
-            console.log(`on connect`)
+            //console.log(`on connect`)
             console.log(`CONNECTED TO ${options.host}:${options.port}`)
             setConnected(true)
         });
 
         client.on('data', function (data) {
-            console.log(`on data`)
+            //console.log(`on data`)
             const decoded = decodeMessage(data)
             console.log((`[RECEIVED from ${options.host}:${options.port}] \n ${decoded}`))
         });
 
         client.on('error', function (error) {
-            console.log(`on error`)
+            //console.log(`on error`)
             console.log(error);
             disconnect()
             setError(true)
         });
 
         client.on('close', function () {
-            console.log(`on close`)
-            console.log('closed');
+            //console.log(`on close`)
+            console.log('CLOSED');
             disconnect()
             setError(true)
         });
     }
 
-    return useMemo(() =>([connected, connect, sendMessage, client, disconnect, error]), [connected, error])
+
+    return useMemo(() =>([connected, connect, sendMessage, client, disconnect, error]), [client, connected, error])
 }

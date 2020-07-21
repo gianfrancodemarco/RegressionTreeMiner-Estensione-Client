@@ -11,14 +11,17 @@ import useSocket from "../../hooks/useSocket";
 import {Actions} from 'react-native-router-flux'
 import {Context, showLoading} from '../../hooks/globalState/Store';
 import MainLayout from '../MainLayout/MainLayout';
+import useGlobalState from "../../hooks/globalState/useGlobalState";
 
 export default function ConnectScreen() {
 
-    const [, dispatch] = useContext(Context)
+    const [state, dispatch] = useContext(Context)
 
     const defaultHost = "192.168.1.156:8080"
     const [host, setHost] = useState("192.168.1.156:8080")
-    const [connected, connect, sendMessage, client, closeConnection, error] = useSocket()
+
+    //useGlobalState -> EFFETTUA IL DISPATCH NELLO STATO GLOBALE AGGIORNANDO LA SOCKET
+    const [connected, connect,,,,,, error] = useGlobalState(useSocket(), "UPDATE_SOCKET", "socket")
 
     useEffect(() => {
         if(error){
@@ -30,7 +33,6 @@ export default function ConnectScreen() {
     useEffect(() => {
         console.log({connected})
         if(connected){
-            dispatch({type:"UPDATE_SOCKET", payload:{socket: [connected, connect, sendMessage, client, closeConnection]}})
             showLoading(false)
             Actions.replace('loadDataset')
         }
