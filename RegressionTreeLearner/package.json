@@ -21,6 +21,7 @@
     "react-native-svg": "^12.1.0",
     "react-native-tcp-socket": "^4.1.0",
     "react-native-unimodules": "~0.9.0",
+    "react-native-vector-icons": "^7.0.0",
     "react-native-web": "~0.11.7",
     "stream": "0.0.2",
     "stream-browserify": "^3.0.0"

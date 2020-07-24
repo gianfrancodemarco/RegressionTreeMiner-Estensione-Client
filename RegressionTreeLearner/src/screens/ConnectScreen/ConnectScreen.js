@@ -4,6 +4,7 @@ import {
     Text,
     Button,
     View,
+    TouchableOpacity,
     TextInput
 } from 'react-native';
 import {defaultLabelStyles} from '../GenericStyles'
@@ -12,13 +13,14 @@ import {Actions} from 'react-native-router-flux'
 import {Context, showLoading} from '../../hooks/globalState/Store';
 import MainLayout from '../MainLayout/MainLayout';
 import useGlobalState from "../../hooks/globalState/useGlobalState";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function ConnectScreen() {
 
     const [state, dispatch] = useContext(Context)
 
-    const defaultHost = "192.168.1.156:8080"
-    const [host, setHost] = useState("192.168.1.156:8080")
+    const defaultHost = "192.168.1.156:8085"
+    const [host, setHost] = useState("192.168.1.156:8085")
 
     //useGlobalState -> EFFETTUA IL DISPATCH NELLO STATO GLOBALE AGGIORNANDO LA SOCKET
     const [connected, connect,,,,,, error] = useGlobalState(useSocket(), "UPDATE_SOCKET", "socket")
@@ -51,6 +53,18 @@ export default function ConnectScreen() {
                         onPress={() => connectToServer(defaultHost)}
                         disabled={connected}
                     />
+                    <View style={{borderRadius: 25, width:50, backgroundColor: 'white'}} >
+                        <TouchableOpacity onPress={() => alert("CIAO")} borderWidth={1}>
+                            <Icon name="rocket" size={45} color="#900" />
+                        </TouchableOpacity>
+                    </View>
+                    <Icon name="music" size={30} color="#900" />
+                    <Icon name="glass" size={30} color="#900" />
+                    <Icon name="rss" size={30} color="#900" />
+                    <Icon name="s" size={30} color="#900" />
+                    <Icon name="arrow-circle-up" size={30} color="#900" />
+                    <Icon name="square-o" size={30} color="#900" />
+
                 </View>
 
                 <Text style={{...defaultLabelStyles, color: 'white'}}>
