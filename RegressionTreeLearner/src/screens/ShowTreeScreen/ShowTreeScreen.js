@@ -22,7 +22,12 @@ import {
     getButtonTree,
     white
 } from "./ShowTreeScreenStyles";
-import {radioGroupStyle, shadowContainer, shadowContainerInnerView} from "../LoadDatasetScreen/LoadDatasetScreenStyles";
+import {
+    getNextButton, getRestart, getRestartButton,
+    radioGroupStyle,
+    shadowContainer,
+    shadowContainerInnerView
+} from "../LoadDatasetScreen/LoadDatasetScreenStyles";
 import useGlobalState from "../../hooks/globalState/useGlobalState";
 import useSocket from "../../hooks/useSocket";
 
@@ -45,6 +50,7 @@ export default function ShowTreeScreen() {
     const [showPredict, setShowPredict] = useState(false)
     const [options, setOptions] = useState()
     const [split, setSplit] = useState(0)
+    const [leafValue, setLeafValue] = useState(null)
 
     useEffect(() => {
         if(error){
@@ -87,6 +93,8 @@ export default function ShowTreeScreen() {
     const predictClassObserver = (data) => {
         const decoded = decodeMessage(data)
 
+        console.log(decoded)
+
         if (decoded && decoded.indexOf(MESSAGES.QUERY) !== -1){
             let options = decoded.replace(MESSAGES.QUERY, '').trim().split('\n').map(el => ({label: el}))
             setOptions(options.map((el, index )=> ({
@@ -96,19 +104,35 @@ export default function ShowTreeScreen() {
 
 
         if(decoded && decoded.indexOf(MESSAGES.END) !== -1){
-
+            console.log({decoded})
+            setLeafValue(decoded.replace(MESSAGES.END, '').trim())
         }
     }
 
+    const sendPredict = () => sendMessage(split.toString())
 
-    const predictForm =
-            <RadioForm
-                {...radioGroupStyle}
-                radio_props={options}
-                initial={0}
-                onPress={setSplit}
-            />
 
+    const restartPredict = () => {
+        sendMessage("[START PREDICTION]")
+        setOptions([])
+        setSplit(0)
+        setLeafValue(null)
+    }
+
+    const predictForm = leafValue === null ?
+                <>
+                    <RadioForm
+                        {...radioGroupStyle}
+                        radio_props={options}
+                        initial={0}
+                        onPress={setSplit}
+                    />
+                    <Button {...getNextButton(connected)} onPress={() => {sendPredict()}}/>
+                </> :
+                <>
+                    <Text style={{...white}}>Predicted value : {leafValue}</Text>
+                    <Button {...getRestartButton(connected)} onPress={() => {restartPredict()}}/>
+                </>
 
     return (
         <MainLayout customContainer={customContainer}>
@@ -122,8 +146,8 @@ export default function ShowTreeScreen() {
             <BoxShadow setting={{...shadowContainer, height: fullHeight}}>
                 <View style={shadowContainerInnerView}>
                     <ScrollView>
-                        {showTree && <Text style={white}>{state.tree}</Text>}
-                        {showRules && <Text style={white}>{state.rules}</Text>}
+                        {showTree && <ScrollView horizontal={true}><Text style={white}>{state.tree}</Text></ScrollView>}
+                        {showRules && <ScrollView horizontal={true}><Text style={white}>{state.rules}</Text></ScrollView>}
                         {showPredict && predictForm}
                     </ScrollView>
                 </View>

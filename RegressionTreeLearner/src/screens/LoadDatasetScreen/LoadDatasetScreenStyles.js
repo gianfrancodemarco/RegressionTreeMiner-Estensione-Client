@@ -48,6 +48,12 @@ export const getNextButton = (connected) => ({
     color: 'hsla(215, 67%, 34%, 1)'
 })
 
+export const getRestartButton = (connected) => ({
+    title: 'Restart',
+    disabled: !connected,
+    color: 'hsla(215, 67%, 34%, 1)'
+})
+
 export const nextButtonContainer = {
     position: 'absolute',
     bottom: 30,

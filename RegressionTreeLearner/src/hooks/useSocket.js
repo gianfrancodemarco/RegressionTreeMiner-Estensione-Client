@@ -70,7 +70,6 @@ export default function useSocket(props){
         client.on('data', function (data) {
             //console.log(`on data`)
             const decoded = decodeMessage(data)
-            console.log((`[RECEIVED from ${options.host}:${options.port}] \n ${decoded}`))
         });
 
         client.on('error', function (error) {
