@@ -40,6 +40,13 @@ export default function useSocket(props){
         if (connecting) {
             console.log(`[Attempting to connect ${options.host}:${options.port}]`)
             setClient(TcpSocket.createConnection(options))
+            setTimeout(() => {
+                if(!connected){
+                    console.log("[ERROR] Could not connect to socket");
+                    disconnect()
+                    setError(true)
+                }
+            }, 5000)
         }
     }, [connecting]);
 

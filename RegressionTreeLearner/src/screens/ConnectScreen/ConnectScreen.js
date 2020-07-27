@@ -19,11 +19,12 @@ export default function ConnectScreen() {
 
     const [state, dispatch] = useContext(Context)
 
-    const defaultHost = "192.168.1.156:8085"
-    const [host, setHost] = useState("192.168.1.156:8085")
+    const defaultHost = "192.168.1.62:8085"
+    const [host, setHost] = useState("192.168.1.62:8085")
 
     //useGlobalState -> EFFETTUA IL DISPATCH NELLO STATO GLOBALE AGGIORNANDO LA SOCKET
-    const [connected, connect,,,,,, error] = useGlobalState(useSocket(), "UPDATE_SOCKET", "socket")
+    const [connected, connect,,,, error] = useGlobalState(useSocket(), "UPDATE_SOCKET", "socket")
+    console.log([connected, connect, error] )
 
     useEffect(() => {
         if(error){
