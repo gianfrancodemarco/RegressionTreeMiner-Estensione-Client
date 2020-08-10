@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export const shadowContainerInnerView = {padding: 35, flex: 1}
+export const shadowContainerInnerView = {padding: 35, flexGrow: 10}
 
 
 export const shadowContainer = {

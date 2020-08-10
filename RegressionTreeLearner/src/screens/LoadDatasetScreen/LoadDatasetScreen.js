@@ -7,9 +7,12 @@ import styles, {
     shadowContainerInnerView
 } from "./LoadDatasetScreenStyles";
 import {
+    Dimensions,
+    Text,
     View,
     Button,
-    BackHandler
+    BackHandler,
+    ScrollView
 } from 'react-native';
 import {LEARNOPTIONS, MESSAGES} from '../../utils/Dataset';
 import RadioForm from 'react-native-simple-radio-button';
@@ -20,6 +23,9 @@ import {Actions} from 'react-native-router-flux'
 import {BoxShadow} from "react-native-shadow";
 import useGlobalState from "../../hooks/globalState/useGlobalState";
 import useSocket from "../../hooks/useSocket";
+import {white} from "../ShowTreeScreen/ShowTreeScreenStyles";
+import CustomIcon from "../../components/CustomIcon/CustomIcon";
+
 
 export default function LoadDatasetScreen(props) {
 
@@ -39,6 +45,8 @@ export default function LoadDatasetScreen(props) {
     const [step, setStep] = useState(props.step ? props.step : 1)
     const [options, setOptions] = useState([])
     const [selection, setSelection] = useState(0)
+
+    const [file, setFile] = useState()
 
     useEffect(() => {
         if(error){
@@ -121,11 +129,68 @@ export default function LoadDatasetScreen(props) {
 
     }
 
+    const uploadFile = async () => {
+        /* FilePickerManager.showFilePicker(null, (response) => {
+             console.log('Response = ', response);
+
+             if (response.didCancel) {
+                 console.log('User cancelled file picker');
+             }
+             else if (response.error) {
+                 console.log('FilePickerManager Error: ', response.error);
+             }
+             else {
+                 this.setState({
+                     file: response
+                 });
+             }
+         });*/
+
+        try {
+            const res = await DocumentPicker.pick({
+                type: [DocumentPicker.types.allFiles],
+                //There can me more options as well
+                // DocumentPicker.types.allFiles
+                // DocumentPicker.types.images
+                // DocumentPicker.types.plainText
+                // DocumentPicker.types.audio
+                // DocumentPicker.types.pdf
+            });
+            //Printing the log realted to the file
+            console.log('res : ' + JSON.stringify(res));
+            console.log('URI : ' + res.uri);
+            console.log('Type : ' + res.type);
+            console.log('File Name : ' + res.name);
+            console.log('File Size : ' + res.size);
+            //Setting the state to show single file attributes
+            this.setState({singleFile: res});
+        } catch (err) {
+            //Handling any exception (If any)
+            if (DocumentPicker.isCancel(err)) {
+                //If user canceled the document selection
+                alert('Canceled from single doc picker');
+            } else {
+                //For Unknown Error
+                alert('Unknown Error: ' + JSON.stringify(err));
+                throw err;
+            }
+        }
+    }
+
     return (
         <MainLayout style={styles.container}>
             <BoxShadow setting={shadowContainer}>
                 <View style={shadowContainerInnerView}>
-                    {getRadioButton()}
+                    <ScrollView style={{flexGrow: 0.8}}>
+                        {getRadioButton()}
+                        {step === 1 &&
+                            <View style={{width: Dimensions.get('window').width * 0.82, alignItems: "center"}}>
+                                <Text style={white}>or</Text>
+                                <CustomIcon name={"upload"} onPress={uploadFile} viewStyle={{paddingLeft: 9}} active/>
+                                <Text style={white}>upload .sql/.dat file</Text>
+                            </View>
+                        }
+                    </ScrollView>
                     <View style={nextButtonContainer}>
                         <Button {...getNextButton(connected)} onPress={() => {sendSelection()}}/>
                     </View>

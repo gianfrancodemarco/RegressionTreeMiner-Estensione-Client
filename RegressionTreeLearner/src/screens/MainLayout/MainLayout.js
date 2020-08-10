@@ -13,14 +13,6 @@ export default function MainLayout(props) {
             <ImageBackground source={props.background ? props.background : require('../../assets/121410.jpg')}
                              style={{width: Dimensions.get('window').width, height: Dimensions.get('screen').height}}>
                 <SafeAreaView style={MainLayoutStyles.container}>
-                    <View style={props.customContainer ? {...MainLayoutStyles.innerContainer, ...props.customContainer} : MainLayoutStyles.innerContainer}>
-                        <Text style={MainLayoutStyles.header}>
-                            REGRESSION TREE LEARNER
-                        </Text>
-                        <Text style={MainLayoutStyles.credits}>
-                            by Gianfranco Demarco
-                        </Text>
-                    </View>
                     {state.isLoading ?
                         (
                             <Spinner
@@ -30,10 +22,20 @@ export default function MainLayout(props) {
                             />
                         ) :
                         (
+                            <>
+                            <View style={props.customContainer ? {...MainLayoutStyles.innerContainer, ...props.customContainer} : MainLayoutStyles.innerContainer}>
+                                <Text style={MainLayoutStyles.header}>
+                                    REGRESSION TREE LEARNER
+                                </Text>
+                                <Text style={MainLayoutStyles.credits}>
+                                    by Gianfranco Demarco
+                                </Text>
+                            </View>
                             <View
                                 style={MainLayoutStyles.innerContainer}>
                                 {props.children}
                             </View>
+                            </>
                         )
                     }
                 </SafeAreaView>

@@ -46,7 +46,7 @@ export default function useSocket(props){
                     disconnect()
                     setError(true)
                 }
-            }, 5000)
+            }, 10000)
         }
     }, [connecting]);
 
@@ -61,7 +61,7 @@ export default function useSocket(props){
     }, [client])
 
     const sendMessage = (message, callback) => {
-        showToast("[SENT to server] -> " + message)
+        //showToast("[SENT to server] -> " + message)
         client.write(message)
         if(callback)
             callback()
@@ -74,10 +74,7 @@ export default function useSocket(props){
             setConnected(true)
         });
 
-        client.on('data', function (data) {
-            //console.log(`on data`)
-            const decoded = decodeMessage(data)
-        });
+        client.on('data', function (data) {});
 
         client.on('error', function (error) {
             //console.log(`on error`)

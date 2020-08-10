@@ -54,18 +54,6 @@ export default function ConnectScreen() {
                         onPress={() => connectToServer(defaultHost)}
                         disabled={connected}
                     />
-                    <View style={{borderRadius: 25, width:50, backgroundColor: 'white'}} >
-                        <TouchableOpacity onPress={() => alert("CIAO")} borderWidth={1}>
-                            <Icon name="rocket" size={45} color="#900" />
-                        </TouchableOpacity>
-                    </View>
-                    <Icon name="music" size={30} color="#900" />
-                    <Icon name="glass" size={30} color="#900" />
-                    <Icon name="rss" size={30} color="#900" />
-                    <Icon name="s" size={30} color="#900" />
-                    <Icon name="arrow-circle-up" size={30} color="#900" />
-                    <Icon name="square-o" size={30} color="#900" />
-
                 </View>
 
                 <Text style={{...defaultLabelStyles, color: 'white'}}>

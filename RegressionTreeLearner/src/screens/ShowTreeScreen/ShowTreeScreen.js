@@ -6,7 +6,8 @@ import {
     StyleSheet,
     ScrollView,
     Dimensions,
-    BackHandler
+    BackHandler,
+    TouchableOpacity
 } from 'react-native';
 import MainLayout from '../MainLayout/MainLayout';
 import {Context, showLoading} from "../../hooks/globalState/Store";
@@ -30,6 +31,8 @@ import {
 } from "../LoadDatasetScreen/LoadDatasetScreenStyles";
 import useGlobalState from "../../hooks/globalState/useGlobalState";
 import useSocket from "../../hooks/useSocket";
+import Icon from "react-native-vector-icons/FontAwesome";
+import CustomIcon from "../../components/CustomIcon/CustomIcon";
 
 
 export default function ShowTreeScreen() {
@@ -136,18 +139,20 @@ export default function ShowTreeScreen() {
 
     return (
         <MainLayout customContainer={customContainer}>
-                <View style={{width: Dimensions.get('window').width}}>
-                        <View style={{flexDirection:'row', ...white}}>
-                            <Button {...getButtonRules(showRules)}  onPress={clickRules} />
-                            <Button {...getButtonTree(showTree)}  onPress={clickTree} />
-                            <Button {...getButtonPredict(showPredict)}  onPress={clickPredict} />
-                        </View>
-                </View>
+            <View style={{display: "flex", flexDirection: "row"}}>
+                <CustomIcon name={"edit"}  active={showRules} onPress={clickRules} viewStyle={{paddingLeft: 9}} />
+                <CustomIcon name={"tree"}  active={showTree} onPress={clickTree}  viewStyle={{paddingLeft: 10, paddingTop: 3}} />
+                <CustomIcon name={"plus"}  active={showPredict}onPress={clickPredict} />
+            </View>
             <BoxShadow setting={{...shadowContainer, height: fullHeight}}>
                 <View style={shadowContainerInnerView}>
                     <ScrollView>
-                        {showTree && <ScrollView horizontal={true}><Text style={white}>{state.tree}</Text></ScrollView>}
-                        {showRules && <ScrollView horizontal={true}><Text style={white}>{state.rules}</Text></ScrollView>}
+                        {showTree && <ScrollView horizontal={true}>
+                            <Text style={white}>{state.tree.concat("\n\n")}</Text>
+                        </ScrollView>}
+                        {showRules && <ScrollView horizontal={true}>
+                            <Text style={white}>{state.rules}</Text>
+                        </ScrollView>}
                         {showPredict && predictForm}
                     </ScrollView>
                 </View>
