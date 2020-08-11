@@ -4,13 +4,15 @@
     "android": "npx react-native run-android --no-jetifier",
     "ios": "npx react-native run-ios"
   },
-  "postinstall": "rn-nodeify --install stream,process,util --hack",
+  "postinstall": "rnd-nodeify --install stream,process,util --hack",
   "dependencies": {
     "gojs": "^2.1.18",
     "react": "16.11.0",
     "react-dom": "~16.9.0",
     "react-native": "^0.62.2",
     "react-native-cli": "^2.0.1",
+    "react-native-document-picker": "^3.5.4",
+    "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "~1.6.0",
     "react-native-loading-spinner-overlay": "^1.1.0",
     "react-native-reanimated": "~1.7.0",

@@ -22,6 +22,7 @@ export const DATASETOPTION = [
 
 export const MESSAGES = {
     INTERRUPT_PREDICTION: '-1',
+    UPLOAD: "[UPLOAD]",
     START_PREDICTION : '[START PREDICTION]',
     DATASETS: '[DATASETS]',
     RULES: '[RULES]',

@@ -25,13 +25,15 @@ import useGlobalState from "../../hooks/globalState/useGlobalState";
 import useSocket from "../../hooks/useSocket";
 import {white} from "../ShowTreeScreen/ShowTreeScreenStyles";
 import CustomIcon from "../../components/CustomIcon/CustomIcon";
-
+import DocumentPicker from "react-native-document-picker";
+import useToast from "../../hooks/useToast";
 
 export default function LoadDatasetScreen(props) {
 
     useEffect(() => console.log('Entering LoadDatasetScreen'), [])
 
     const [state, dispatch] = useContext(Context)
+    const [showToast, showToastWithGravity, showToastWithGravityAndOffset] = useToast()
 
     //useGlobalState -> RICOSTRUISCE LA SOCKET PARTENDO DA QUELLA CONSERVATA NELLO STATO
     const [connected, connect, sendMessage, client, closeConnection, error] = useGlobalState(useSocket(
@@ -129,52 +131,52 @@ export default function LoadDatasetScreen(props) {
 
     }
 
-    const uploadFile = async () => {
-        /* FilePickerManager.showFilePicker(null, (response) => {
-             console.log('Response = ', response);
-
-             if (response.didCancel) {
-                 console.log('User cancelled file picker');
-             }
-             else if (response.error) {
-                 console.log('FilePickerManager Error: ', response.error);
-             }
-             else {
-                 this.setState({
-                     file: response
-                 });
-             }
-         });*/
-
+    const selectFile = async () => {
         try {
             const res = await DocumentPicker.pick({
-                type: [DocumentPicker.types.allFiles],
-                //There can me more options as well
-                // DocumentPicker.types.allFiles
-                // DocumentPicker.types.images
-                // DocumentPicker.types.plainText
-                // DocumentPicker.types.audio
-                // DocumentPicker.types.pdf
+                type: [DocumentPicker.types.allFiles]
             });
-            //Printing the log realted to the file
-            console.log('res : ' + JSON.stringify(res));
             console.log('URI : ' + res.uri);
-            console.log('Type : ' + res.type);
             console.log('File Name : ' + res.name);
-            console.log('File Size : ' + res.size);
-            //Setting the state to show single file attributes
-            this.setState({singleFile: res});
+
+            const extension = res.name.substring(res.name.indexOf('.'), res.name.length).toLowerCase()
+            if(extension !== '.sql' && extension !== '.dat')
+                throw 'Please select a file with .sql or .dat extension'
+            readFile(res.uri, data => uploadFile(data, res.name))
         } catch (err) {
             //Handling any exception (If any)
-            if (DocumentPicker.isCancel(err)) {
-                //If user canceled the document selection
-                alert('Canceled from single doc picker');
-            } else {
-                //For Unknown Error
-                alert('Unknown Error: ' + JSON.stringify(err));
-                throw err;
-            }
+            if (DocumentPicker.isCancel(err)) console.log('Canceled from single doc picker')
+            else showToast(err)
         }
+    }
+
+    const readFile = (uri, callback) => {
+        const RNFS = require("react-native-fs");
+        RNFS.readFile(uri, "base64").then(data => {
+            // binary data
+            if (callback)
+                callback(data)
+        });
+    }
+
+    //ADD file upload observer
+    const fileUploadObserver = (data) => {
+        const decoded = decodeMessage(data)
+        if (decoded && decoded.indexOf(MESSAGES.UPLOAD) !== -1) {
+            client.off('data', fileUploadObserver)
+            if(decoded.replace(MESSAGES.UPLOAD, '').trim() === "KO"){
+                showToast("Error! Check the file and try again")
+            }else showToast("Success")
+        }
+
+        showLoading(false)
+    }
+
+    const uploadFile = (file, filename) => {
+        showLoading(true)
+        sendMessage("3")
+        setTimeout(() => sendMessage(JSON.stringify({filename, file})), 1000)
+        client.on('data', fileUploadObserver)
     }
 
     return (
@@ -186,8 +188,8 @@ export default function LoadDatasetScreen(props) {
                         {step === 1 &&
                             <View style={{width: Dimensions.get('window').width * 0.82, alignItems: "center"}}>
                                 <Text style={white}>or</Text>
-                                <CustomIcon name={"upload"} onPress={uploadFile} viewStyle={{paddingLeft: 9}} active/>
-                                <Text style={white}>upload .sql/.dat file</Text>
+                                <CustomIcon name={"upload"} onPress={selectFile} viewStyle={{paddingLeft: 9}} active/>
+                                <Text style={white}>upload .sql/.dat file (up to 64kb)</Text>
                             </View>
                         }
                     </ScrollView>
