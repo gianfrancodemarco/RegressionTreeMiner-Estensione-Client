@@ -17,7 +17,7 @@ import {
 import {LEARNOPTIONS, MESSAGES} from '../../utils/Dataset';
 import RadioForm from 'react-native-simple-radio-button';
 import {Context, showLoading} from '../../hooks/globalState/Store';
-import {decodeMessage} from '../../utils/Utils';
+import {decodeMessage, readFile} from '../../utils/Utils';
 import MainLayout from '../MainLayout/MainLayout';
 import {Actions} from 'react-native-router-flux'
 import {BoxShadow} from "react-native-shadow";
@@ -30,10 +30,13 @@ import useToast from "../../hooks/useToast";
 
 export default function LoadDatasetScreen(props) {
 
-    useEffect(() => console.log('Entering LoadDatasetScreen'), [])
-
     const [state, dispatch] = useContext(Context)
-    const [showToast, showToastWithGravity, showToastWithGravityAndOffset] = useToast()
+    const [showToast] = useToast()
+
+    const [step, setStep] = useState(props.step ? props.step : 1)
+
+    const [options, setOptions] = useState([])
+    const [selection, setSelection] = useState(0)
 
     //useGlobalState -> RICOSTRUISCE LA SOCKET PARTENDO DA QUELLA CONSERVATA NELLO STATO
     const [connected, connect, sendMessage, client, closeConnection, error] = useGlobalState(useSocket(
@@ -43,12 +46,11 @@ export default function LoadDatasetScreen(props) {
                 client: state.socket[3]
         }), "UPDATE_SOCKET", "socket")
 
+    useEffect(() => {
+        console.log('Entering LoadDatasetScreen')
+        console.log([connected, connect, sendMessage, client, closeConnection, error])
+    }, [])
 
-    const [step, setStep] = useState(props.step ? props.step : 1)
-    const [options, setOptions] = useState([])
-    const [selection, setSelection] = useState(0)
-
-    const [file, setFile] = useState()
 
     useEffect(() => {
         if(error){
@@ -58,8 +60,15 @@ export default function LoadDatasetScreen(props) {
     }, [error])
 
     const backHandler = () => {
-        Actions.replace('connectScreen')
-        BackHandler.removeEventListener('hardwareBackPress', backHandler)
+        if(step === 1){
+            Actions.replace('connectScreen')
+            BackHandler.removeEventListener('hardwareBackPress', backHandler)
+        }else {
+            setStep(1)
+            setSelection(null)
+            setOptions([])
+        }
+        return true
     }
 
     useEffect(() => {
@@ -67,7 +76,7 @@ export default function LoadDatasetScreen(props) {
         client.on('data', tableReceivedObserver)
     }, [])
 
-    //FLOW: tables -> tree -> rules ---> Tree Screen
+    //FLOW: tables -> rules -> tree ---> Tree Screen
 
     //ADD TABLE LISTENER
     const tableReceivedObserver = (data) => {
@@ -78,7 +87,7 @@ export default function LoadDatasetScreen(props) {
             options = options.map((el, index) => ({"label": el.replace('.dmp', '').trim(), "value": index}))
             setOptions(options)
             client.off('data', tableReceivedObserver)
-            client.on('data', treeReceivedObserver)
+            client.on('data', rulesReceiverObserver)
             showLoading(false)
         }
     }
@@ -87,11 +96,23 @@ export default function LoadDatasetScreen(props) {
     //ADD TREE LISTENER
     const treeReceivedObserver = (data) => {
         const decoded = decodeMessage(data)
+        const endTree = () => {
+            showLoading(false)
+            client.off('data', treeReceivedObserver)
+            BackHandler.removeEventListener('hardwareBackPress', backHandler)
+            Actions.replace('showTree')
+        }
 
-        if (decoded && decoded.indexOf(MESSAGES.TREE) !== -1) {
-            client.off('data', tableReceivedObserver)
-            dispatch({type: "TREE", payload: {tree: decoded.replace(MESSAGES.TREE, '')}})
-            client.on('data', rulesReceiverObserver)
+        if (decoded){
+            if(decoded.indexOf(MESSAGES.TREE) !== -1){
+                if(decoded.indexOf(MESSAGES.END_TREE) !== -1){
+                    dispatch({type: "TREE", payload: {tree: decoded.replace(MESSAGES.TREE, '').replace(MESSAGES.END_TREE, '')}})
+                    endTree()
+                }else dispatch({type: "TREE", payload: {tree: decoded.replace(MESSAGES.TREE, '')}})
+            }else if(decoded.indexOf(MESSAGES.END_TREE) !== -1){
+                dispatch({type: "TREE", payload: {tree: state.tree.concat(decoded.replace(MESSAGES.END_TREE, ''))}})
+                endTree()
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////////
@@ -102,10 +123,8 @@ export default function LoadDatasetScreen(props) {
 
         if (decoded && decoded.indexOf(MESSAGES.RULES) !== -1) {
             client.off('data', rulesReceiverObserver)
+            client.on('data', treeReceivedObserver)
             dispatch({type: "RULES", payload: {rules: decoded.replace(MESSAGES.RULES, '')}})
-            showLoading(false)
-            BackHandler.removeEventListener('hardwareBackPress', backHandler)
-            Actions.replace('showTree')
         }
     }
 
@@ -131,6 +150,7 @@ export default function LoadDatasetScreen(props) {
 
     }
 
+    // ************** ACQUIRE NEW DATASET ************** //
     const selectFile = async () => {
         try {
             const res = await DocumentPicker.pick({
@@ -144,21 +164,10 @@ export default function LoadDatasetScreen(props) {
                 throw 'Please select a file with .sql or .dat extension'
             readFile(res.uri, data => uploadFile(data, res.name))
         } catch (err) {
-            //Handling any exception (If any)
             if (DocumentPicker.isCancel(err)) console.log('Canceled from single doc picker')
             else showToast(err)
         }
     }
-
-    const readFile = (uri, callback) => {
-        const RNFS = require("react-native-fs");
-        RNFS.readFile(uri, "base64").then(data => {
-            // binary data
-            if (callback)
-                callback(data)
-        });
-    }
-
     //ADD file upload observer
     const fileUploadObserver = (data) => {
         const decoded = decodeMessage(data)
@@ -171,13 +180,13 @@ export default function LoadDatasetScreen(props) {
 
         showLoading(false)
     }
-
     const uploadFile = (file, filename) => {
         showLoading(true)
         sendMessage("3")
         setTimeout(() => sendMessage(JSON.stringify({filename, file})), 1000)
         client.on('data', fileUploadObserver)
     }
+    // ************************************************ //
 
     return (
         <MainLayout style={styles.container}>

@@ -24,15 +24,15 @@ import {
     white
 } from "./ShowTreeScreenStyles";
 import {
-    getNextButton, getRestart, getRestartButton,
+    getNextButton, getRestartButton, nextButtonContainer, nextButtonContainerPredict,
     radioGroupStyle,
     shadowContainer,
     shadowContainerInnerView
 } from "../LoadDatasetScreen/LoadDatasetScreenStyles";
 import useGlobalState from "../../hooks/globalState/useGlobalState";
 import useSocket from "../../hooks/useSocket";
-import Icon from "react-native-vector-icons/FontAwesome";
 import CustomIcon from "../../components/CustomIcon/CustomIcon";
+import Spinner from "react-native-loading-spinner-overlay";
 
 
 export default function ShowTreeScreen() {
@@ -122,20 +122,46 @@ export default function ShowTreeScreen() {
         setLeafValue(null)
     }
 
-    const predictForm = leafValue === null ?
-                <>
+    const predictForm = () => {
+        if (options.length === 0) {
+            return <Spinner
+                visible={true}
+                textContent={'Loading...'}
+                textStyle={{color: 'white'}}
+            />
+        }
+
+
+        else if (leafValue === null)
+            return <>
+                <ScrollView style={{flexGrow: 0.65}}>
                     <RadioForm
                         {...radioGroupStyle}
+                        labelStyle={{fontFamily: 'sans-serif-light'}}
+                        buttonSize={30}
                         radio_props={options}
                         initial={0}
                         onPress={setSplit}
                     />
-                    <Button {...getNextButton(connected)} onPress={() => {sendPredict()}}/>
-                </> :
-                <>
-                    <Text style={{...white}}>Predicted value : {leafValue}</Text>
-                    <Button {...getRestartButton(connected)} onPress={() => {restartPredict()}}/>
-                </>
+                </ScrollView>
+                <View style={nextButtonContainerPredict}>
+                    <Button {...getNextButton(connected)} onPress={() => {
+                        sendPredict()
+                    }}/>
+                </View>
+            </>
+
+
+    else return <>
+                <View style={{height: Dimensions.get("screen").height * 0.25, alignItems: "center"}}>
+                    <Text style={{...white, fontSize: 25, fontStyle: "italic"}}>Predicted value :</Text>
+                    <Text style={{...white, fontSize: 40, fontWeight: "bold"}}> {leafValue}</Text>
+                </View>
+                <View style={nextButtonContainerPredict}>
+                    <Button {...getRestartButton(connected)} onPress={restartPredict} />
+                </View>
+            </>
+    }
 
     return (
         <MainLayout customContainer={customContainer}>
@@ -146,16 +172,17 @@ export default function ShowTreeScreen() {
             </View>
             <BoxShadow setting={{...shadowContainer, height: fullHeight}}>
                 <View style={shadowContainerInnerView}>
-                    <ScrollView>
+                    {!showPredict && <ScrollView>
                         {showTree && <ScrollView horizontal={true}>
                             <Text style={white}>{state.tree.concat("\n\n")}</Text>
                         </ScrollView>}
                         {showRules && <ScrollView horizontal={true}>
-                            <Text style={white}>{state.rules}</Text>
+                            <Text style={white}>{state.rules.concat("\n\n")}</Text>
                         </ScrollView>}
-                        {showPredict && predictForm}
-                    </ScrollView>
+                    </ScrollView>}
+                    {showPredict && predictForm()}
                 </View>
+
             </BoxShadow>
         </MainLayout>
     );

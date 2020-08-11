@@ -61,7 +61,6 @@ export default function useSocket(props){
     }, [client])
 
     const sendMessage = (message, callback) => {
-        console.log({message})
         //showToast("[SENT to server] -> " + message)
         client.write(message)
         if(callback)

@@ -28,7 +28,8 @@ export const MESSAGES = {
     RULES: '[RULES]',
     TREE: '[TREE]',
     QUERY: '[QUERY]',
-    END: '[END]'
+    END: '[END]',
+    END_TREE: '[ENDTREE]'
 }
 
 

@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export const shadowContainerInnerView = {padding: 35, flexGrow: 10}
+export const shadowContainerInnerView = {padding: 35, flexGrow: 1}
 
 
 export const shadowContainer = {
@@ -57,6 +57,13 @@ export const getRestartButton = (connected) => ({
 export const nextButtonContainer = {
     position: 'absolute',
     bottom: 30,
+    width: 200,
+    alignSelf: 'center',
+}
+
+export const nextButtonContainerPredict = {
+    position: 'absolute',
+    bottom: 100,
     width: 200,
     alignSelf: 'center',
 }

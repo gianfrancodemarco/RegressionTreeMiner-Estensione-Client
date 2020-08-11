@@ -24,7 +24,6 @@ export default function ConnectScreen() {
 
     //useGlobalState -> EFFETTUA IL DISPATCH NELLO STATO GLOBALE AGGIORNANDO LA SOCKET
     const [connected, connect,,,, error] = useGlobalState(useSocket(), "UPDATE_SOCKET", "socket")
-    console.log([connected, connect, error] )
 
     useEffect(() => {
         if(error){
