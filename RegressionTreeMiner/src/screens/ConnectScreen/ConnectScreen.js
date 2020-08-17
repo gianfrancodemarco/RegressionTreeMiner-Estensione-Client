@@ -47,7 +47,7 @@ export default function ConnectScreen() {
 
     return (
             <MainLayout>
-                <View style={{width: buttonWidth}}>
+                {/*<View style={{width: buttonWidth}}>
                     <Button
                         {...hostButtonProps}
                         onPress={() => connectToServer(defaultHost)}
@@ -57,6 +57,10 @@ export default function ConnectScreen() {
 
                 <Text style={{...defaultLabelStyles, color: 'white'}}>
                     or
+                </Text>*/}
+
+                <Text style={{...defaultLabelStyles, color: 'white', marginTop: 150}}>
+                    Server address:
                 </Text>
 
                 <View style={{width: buttonWidth}}>

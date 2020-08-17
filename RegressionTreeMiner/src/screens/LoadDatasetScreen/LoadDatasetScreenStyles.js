@@ -56,14 +56,14 @@ export const getRestartButton = (connected) => ({
 
 export const nextButtonContainer = {
     position: 'absolute',
-    bottom: 30,
+    bottom: 70,
     width: 200,
     alignSelf: 'center',
 }
 
 export const nextButtonContainerPredict = {
     position: 'absolute',
-    bottom: 100,
+    bottom: 120,
     width: 200,
     alignSelf: 'center',
 }
