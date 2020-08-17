@@ -4,7 +4,9 @@
     "android": "npx react-native run-android --no-jetifier",
     "ios": "npx react-native run-ios"
   },
+  "postinstall": "rnd-nodeify --install stream,process,util --hack",
   "dependencies": {
+    "gojs": "^2.1.18",
     "react": "16.11.0",
     "react-dom": "~16.9.0",
     "react-native": "^0.62.2",
@@ -15,13 +17,25 @@
     "react-native-loading-spinner-overlay": "^1.1.0",
     "react-native-reanimated": "~1.7.0",
     "react-native-router-flux": "^4.2.0",
+    "react-native-screens": "~2.2.0",
     "react-native-shadow": "^1.2.2",
     "react-native-simple-radio-button": "^2.7.4",
     "react-native-splash-screen": "^3.2.0",
-    "react-native-tcp-socket": "^4.1.0",
-    "react-native-vector-icons": "^7.0.0",
     "react-native-svg": "^12.1.0",
-    "react-native-screens": "~2.2.0"
+    "react-native-tcp-socket": "^4.1.0",
+    "react-native-unimodules": "~0.9.0",
+    "react-native-vector-icons": "^7.0.0",
+    "react-native-web": "~0.11.7",
+    "stream": "0.0.2",
+    "stream-browserify": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.6",
+    "babel-jest": "~25.2.6",
+    "jest": "~25.2.6",
+    "react-test-renderer": "~16.9.0",
+    "babel-preset-expo": "~8.1.0",
+    "rn-nodeify": "^10.2.0"
   },
   "private": true
 }
