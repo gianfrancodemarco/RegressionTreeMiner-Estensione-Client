@@ -96,8 +96,6 @@ export default function ShowTreeScreen() {
     const predictClassObserver = (data) => {
         const decoded = decodeMessage(data)
 
-        console.log(decoded)
-
         if (decoded && decoded.indexOf(MESSAGES.QUERY) !== -1){
             let options = decoded.replace(MESSAGES.QUERY, '').trim().split('\n').map(el => ({label: el}))
             setOptions(options.map((el, index )=> ({
@@ -107,7 +105,6 @@ export default function ShowTreeScreen() {
 
 
         if(decoded && decoded.indexOf(MESSAGES.END) !== -1){
-            console.log({decoded})
             setLeafValue(decoded.replace(MESSAGES.END, '').trim())
         }
     }
@@ -174,10 +171,10 @@ export default function ShowTreeScreen() {
                 <View style={shadowContainerInnerView}>
                     {!showPredict && <ScrollView>
                         {showTree && <ScrollView horizontal={true}>
-                            <Text style={white}>{state.tree.concat("\n\n")}</Text>
+                            <Text style={white}>{state.tree.concat("\n\n\n\n")}</Text>
                         </ScrollView>}
                         {showRules && <ScrollView horizontal={true}>
-                            <Text style={white}>{state.rules.concat("\n\n")}</Text>
+                            <Text style={white}>{state.rules.concat("\n\n\n\n")}</Text>
                         </ScrollView>}
                     </ScrollView>}
                     {showPredict && predictForm()}

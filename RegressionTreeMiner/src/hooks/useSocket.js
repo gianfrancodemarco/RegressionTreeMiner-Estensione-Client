@@ -40,21 +40,22 @@ export default function useSocket(props){
         if (connecting) {
             console.log(`[Attempting to connect ${options.host}:${options.port}]`)
             setClient(TcpSocket.createConnection(options))
-            setTimeout(() => {
+            /*setTimeout(() => {
+                //TODO - CONNECTED E' SEMPRE FALSE
+                console.log({client})
+                console.log('check:', {connected})
                 if(!connected){
                     console.log("[ERROR] Could not connect to socket");
                     disconnect()
                     setError(true)
                 }
-            }, 10000)
+            }, 2000)*/
         }
     }, [connecting]);
 
     //WHEN CONNECTED
     useEffect(() => {
-        //console.log("Checking connected")
         if(client !== null && client !== undefined){
-            console.debug('Initializing client');
             setConnecting(false)
             initializeClient()
         }
@@ -69,7 +70,6 @@ export default function useSocket(props){
 
     const initializeClient = () => {
         client.on('connect', function () {
-            //console.log(`on connect`)
             console.log(`CONNECTED TO ${options.host}:${options.port}`)
             setConnected(true)
         });
@@ -77,14 +77,12 @@ export default function useSocket(props){
         client.on('data', function (data) {});
 
         client.on('error', function (error) {
-            //console.log(`on error`)
             console.log(error);
             disconnect()
             setError(true)
         });
 
         client.on('close', function () {
-            //console.log(`on close`)
             console.log('CLOSED');
             disconnect()
             setError(true)
@@ -92,5 +90,5 @@ export default function useSocket(props){
     }
 
 
-    return useMemo(() =>([connected, connect, sendMessage, client, disconnect, error]), [client, connected, error])
+    return useMemo(() =>([connected, connect, sendMessage, client, disconnect, error]), [client, connected, error, connecting])
 }

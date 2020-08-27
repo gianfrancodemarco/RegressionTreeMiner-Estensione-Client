@@ -46,11 +46,6 @@ export default function LoadDatasetScreen(props) {
                 client: state.socket[3]
         }), "UPDATE_SOCKET", "socket")
 
-    useEffect(() => {
-        console.log('Entering LoadDatasetScreen')
-        console.log([connected, connect, sendMessage, client, closeConnection, error])
-    }, [])
-
 
     useEffect(() => {
         if(error){
@@ -83,11 +78,17 @@ export default function LoadDatasetScreen(props) {
         const decoded = decodeMessage(data)
 
         if (decoded && decoded.indexOf(MESSAGES.DATASETS) !== -1) {
-            let options = decoded.replace(MESSAGES.DATASETS, "").split(";")
-            options = options.map((el, index) => ({"label": el.replace('.dmp', '').trim(), "value": index}))
+            let options = decoded.replace(MESSAGES.DATASETS, "")
+            console.log(options)
+            options = options.trim().length > 0
+                ? options.split(";").map((el, index) => ({"label": el.replace('.dmp', '').trim(), "value": index}))
+                : []
             setOptions(options)
-            client.off('data', tableReceivedObserver)
-            client.on('data', rulesReceiverObserver)
+
+            if(options.length){
+                client.off('data', tableReceivedObserver)
+                client.on('data', rulesReceiverObserver)
+            }
             showLoading(false)
         }
     }
@@ -139,7 +140,14 @@ export default function LoadDatasetScreen(props) {
 
         tmpOptions = step === 1 ? LEARNOPTIONS : options
 
-        return options ? <RadioForm
+        console.log({tmpOptions})
+        if (!state.isLoading && tmpOptions.length === 0){
+            showToast('No elements returned by the server')
+            setStep(1)
+            return <></>
+        }
+
+        else return options ? <RadioForm
             {...radioGroupStyle}
             labelStyle={{fontFamily:'sans-serif-light'}}
             buttonSize={30}

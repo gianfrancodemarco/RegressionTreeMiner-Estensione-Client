@@ -33,7 +33,6 @@ export default function ConnectScreen() {
     }, [error])
 
     useEffect(() => {
-        console.log({connected})
         if(connected){
             showLoading(false)
             Actions.replace('loadDataset')

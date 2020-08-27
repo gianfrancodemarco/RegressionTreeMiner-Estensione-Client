@@ -20,4 +20,8 @@
         <item name="android:background">@drawable/background_splash</item>
     </style>
 
+    <style name="SplashStatusBarTheme" parent="SplashScreen_SplashTheme">
+        <item name="android:statusBarColor">@color/splashscreen_bg</item>
+    </style>
+
 </resources>
