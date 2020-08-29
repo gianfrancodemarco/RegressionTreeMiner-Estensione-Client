@@ -31,10 +31,12 @@ import useToast from "../../hooks/useToast";
 export default function LoadDatasetScreen(props) {
 
     const [state, dispatch] = useContext(Context)
+    const [tree, setTree] = useState()
+
+
     const [showToast] = useToast()
 
     const [step, setStep] = useState(props.step ? props.step : 1)
-
     const [options, setOptions] = useState([])
     const [selection, setSelection] = useState(0)
 
@@ -45,6 +47,14 @@ export default function LoadDatasetScreen(props) {
                 error: state.socket[5],
                 client: state.socket[3]
         }), "UPDATE_SOCKET", "socket")
+
+
+    //Reset Tree & Rules when enters
+    useEffect(() => {
+        dispatch({type: "TREE", payload: {tree: ""}})
+        dispatch({type: "RULES", payload: {rules: ""}})
+    }, [])
+
 
 
     useEffect(() => {
@@ -79,7 +89,6 @@ export default function LoadDatasetScreen(props) {
 
         if (decoded && decoded.indexOf(MESSAGES.DATASETS) !== -1) {
             let options = decoded.replace(MESSAGES.DATASETS, "")
-            console.log(options)
             options = options.trim().length > 0
                 ? options.split(";").map((el, index) => ({"label": el.replace('.dmp', '').trim(), "value": index}))
                 : []
@@ -109,9 +118,9 @@ export default function LoadDatasetScreen(props) {
                 if(decoded.indexOf(MESSAGES.END_TREE) !== -1){
                     dispatch({type: "TREE", payload: {tree: decoded.replace(MESSAGES.TREE, '').replace(MESSAGES.END_TREE, '')}})
                     endTree()
-                }else dispatch({type: "TREE", payload: {tree: decoded.replace(MESSAGES.TREE, '')}})
+                }else setTree(decoded.replace(MESSAGES.TREE, ''))
             }else if(decoded.indexOf(MESSAGES.END_TREE) !== -1){
-                dispatch({type: "TREE", payload: {tree: state.tree.concat(decoded.replace(MESSAGES.END_TREE, ''))}})
+                dispatch({type: "TREE", payload: {tree: tree? tree.concat(decoded.replace(MESSAGES.END_TREE, '')) : decoded.replace(MESSAGES.END_TREE, '')}})
                 endTree()
             }
         }
@@ -140,7 +149,6 @@ export default function LoadDatasetScreen(props) {
 
         tmpOptions = step === 1 ? LEARNOPTIONS : options
 
-        console.log({tmpOptions})
         if (!state.isLoading && tmpOptions.length === 0){
             showToast('No elements returned by the server')
             setStep(1)

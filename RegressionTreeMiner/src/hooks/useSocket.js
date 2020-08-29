@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useMemo} from 'react'
 import TcpSocket from 'react-native-tcp-socket';
 import useToast from './useToast';
-import {decodeMessage} from '../utils/Utils';
+import {Actions} from 'react-native-router-flux'
 
 
 export default function useSocket(props){
@@ -39,7 +39,7 @@ export default function useSocket(props){
     useEffect(() => {
         if (connecting) {
             console.log(`[Attempting to connect ${options.host}:${options.port}]`)
-            setClient(TcpSocket.createConnection(options))
+            setClient(TcpSocket.createConnection({...options, timeout:5000}))
             /*setTimeout(() => {
                 //TODO - CONNECTED E' SEMPRE FALSE
                 console.log({client})
@@ -63,7 +63,13 @@ export default function useSocket(props){
 
     const sendMessage = (message, callback) => {
         //showToast("[SENT to server] -> " + message)
-        client.write(message)
+        try{
+            client.write(message)
+        }catch (e) {
+            console.log({e})
+            showToast('Ooops, something went wrong. Please select again your dataset!')
+            Actions.replace('error')
+        }
         if(callback)
             callback()
     }

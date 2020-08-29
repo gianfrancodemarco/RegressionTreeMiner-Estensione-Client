@@ -3,11 +3,9 @@ import {
     View,
     Button,
     Text,
-    StyleSheet,
     ScrollView,
     Dimensions,
     BackHandler,
-    TouchableOpacity
 } from 'react-native';
 import MainLayout from '../MainLayout/MainLayout';
 import {Context, showLoading} from "../../hooks/globalState/Store";
@@ -18,9 +16,6 @@ import RadioForm from "react-native-simple-radio-button";
 import {MESSAGES} from "../../utils/Dataset";
 import {
     customContainer,
-    getButtonPredict,
-    getButtonRules,
-    getButtonTree,
     white
 } from "./ShowTreeScreenStyles";
 import {
