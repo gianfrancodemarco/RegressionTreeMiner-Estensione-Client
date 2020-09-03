@@ -28,6 +28,11 @@ import CustomIcon from "../../components/CustomIcon/CustomIcon";
 import DocumentPicker from "react-native-document-picker";
 import useToast from "../../hooks/useToast";
 
+/**
+ * Componente funzionale che renderizza le schermate che permettono all'utente di selezionare il dataset
+ *
+ * @class LoadDatasetScreen
+ */
 export default function LoadDatasetScreen(props) {
 
     const [state, dispatch] = useContext(Context)
@@ -39,6 +44,7 @@ export default function LoadDatasetScreen(props) {
     const [step, setStep] = useState(props.step ? props.step : 1)
     const [options, setOptions] = useState([])
     const [selection, setSelection] = useState(0)
+
 
     //useGlobalState -> RICOSTRUISCE LA SOCKET PARTENDO DA QUELLA CONSERVATA NELLO STATO
     const [connected, connect, sendMessage, client, closeConnection, error] = useGlobalState(useSocket(
@@ -55,8 +61,10 @@ export default function LoadDatasetScreen(props) {
         dispatch({type: "RULES", payload: {rules: ""}})
     }, [])
 
-
-
+    /**
+     * Hook che in caso di errore renderizza ErrorScreen
+     * @method anonimo
+     */
     useEffect(() => {
         if(error){
             showLoading(false)
@@ -64,6 +72,11 @@ export default function LoadDatasetScreen(props) {
         }
     }, [error])
 
+    /**
+     * Metodo che intercetta l'evento di pressione del tasto indietro del dispositivo.
+     * Se si è nello step 1, riporta alla schermata di connessione; altrimenti torna indietro allo step 1.
+     * @method backHandler
+     */
     const backHandler = () => {
         if(step === 1){
             Actions.replace('connectScreen')
@@ -76,6 +89,7 @@ export default function LoadDatasetScreen(props) {
         return true
     }
 
+
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', backHandler)
         client.on('data', tableReceivedObserver)
@@ -83,6 +97,12 @@ export default function LoadDatasetScreen(props) {
 
     //FLOW: tables -> rules -> tree ---> Tree Screen
 
+    /**
+     * @param {String} data - messaggio ricevuto dal server
+     *
+     * Listener che resta in ascolto dei messaggi del server. Decodifica i messaggi ricevuti e se trova la lista dei dataset, li visualizza
+     * @method tableReceivedObserver
+     */
     //ADD TABLE LISTENER
     const tableReceivedObserver = (data) => {
         const decoded = decodeMessage(data)
@@ -103,6 +123,13 @@ export default function LoadDatasetScreen(props) {
     }
     //////////////////////////////////////////////////////////////////////////////
 
+    /**
+     *
+     * Listener che resta in ascolto dei messaggi del server.
+     * Decodifica i messaggi ricevuti e se trova la descrizione dell'albero, la salva nello stato globale dell'app e visualizza ShowTreeScreen
+     * @method tableReceivedObserver
+     * @param {String} data - messaggio ricevuto dal server
+     */
     //ADD TREE LISTENER
     const treeReceivedObserver = (data) => {
         const decoded = decodeMessage(data)
@@ -127,6 +154,14 @@ export default function LoadDatasetScreen(props) {
     }
     //////////////////////////////////////////////////////////////////////////////
 
+
+    /**
+     *
+     * Listener che resta in ascolto dei messaggi del server.
+     * Decodifica i messaggi ricevuti e se trova le regole dell'albero, le salva nello stato globale dell'app
+     * @method rulesReceiverObserver
+     * @param {String} data - messaggio ricevuto dal server
+     */
     //ADD RULES LISTENER
     const rulesReceiverObserver = (data) => {
         const decoded = decodeMessage(data)
@@ -138,12 +173,23 @@ export default function LoadDatasetScreen(props) {
         }
     }
 
+    /**
+     *
+     * Invia un messaggio al server con l'indice della scelta effettuata dall'utente
+     * @method sendSelection
+     */
     const sendSelection = () => {
         showLoading(true)
         sendMessage(selection.toString(), () => setStep(step + 1))
         setSelection(0)
     }
 
+    /**
+     *
+     * Recupera le opzioni da visualizzare.
+     * Se si è verificato un errore, stampa un messaggio a video e torna allo step 1.
+     * @method getRadioButton
+     */
     const getRadioButton = () =>  {
         let tmpOptions
 
@@ -166,6 +212,14 @@ export default function LoadDatasetScreen(props) {
 
     }
 
+
+    /**
+     *
+     * Apre il DocumentPicker del sistema operativo e attende la scelta dell'utente.
+     * Se il file non ha estensione .sql/.dat, visualizza un messaggio di notifica
+     * Altrimenti, carica i byte del file e chiama uploadFile()
+     * @method selectFile
+     */
     // ************** ACQUIRE NEW DATASET ************** //
     const selectFile = async () => {
         try {
@@ -184,7 +238,14 @@ export default function LoadDatasetScreen(props) {
             else showToast(err)
         }
     }
-    //ADD file upload observer
+
+    /**
+     *
+     * Resta in attesa dell'esito dell'upload del file, quindi lo comunica all'utente
+     * @method fileUploadObserver
+     * @param {String} data - messaggio ricevuto dal server
+     */
+        //ADD file upload observer
     const fileUploadObserver = (data) => {
         const decoded = decodeMessage(data)
         if (decoded && decoded.indexOf(MESSAGES.UPLOAD) !== -1) {
@@ -196,6 +257,14 @@ export default function LoadDatasetScreen(props) {
 
         showLoading(false)
     }
+
+    /**
+     *
+     * Comunica al server che si sta per inviare un file; quindi invia i byte del file
+     * @method uploadFile
+     * @param file - i byte del file da inviare
+     * @param filename - nome del file
+     */
     const uploadFile = (file, filename) => {
         showLoading(true)
         sendMessage("3")

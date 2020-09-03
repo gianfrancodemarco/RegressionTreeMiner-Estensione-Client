@@ -3,6 +3,11 @@ import {View, TouchableOpacity} from "react-native";
 import React from 'react';
 import {BoxShadow} from "react-native-shadow";
 
+/**
+ * Componente custom per la renderizzazione di icone
+ * @class CustomIcon
+ *
+ */
 export default function CustomIcon(props){
     const defaultViewStyle = {
         borderRadius: 60,

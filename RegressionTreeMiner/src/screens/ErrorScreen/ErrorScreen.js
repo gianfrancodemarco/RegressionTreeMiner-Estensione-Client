@@ -7,6 +7,11 @@ import {
 import {Actions} from 'react-native-router-flux'
 import MainLayout from '../MainLayout/MainLayout';
 
+/**
+ * Componente funzionale che renderizza la schermata che viene visualizzata in caso di errore
+ *
+ * @class ErrorScreen
+ */
 export default function ErrorScreen() {
 
     console.log('Rendering error screen')

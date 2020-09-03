@@ -7,6 +7,11 @@ import ShowTreeScreen from "./screens/ShowTreeScreen/ShowTreeScreen";
 import ErrorScreen from "./screens/ErrorScreen/ErrorScreen";
 import SplashScreen from "react-native-splash-screen";
 
+
+/**
+ * Componente funzionale che il ruoter per l'applicazione (associa ogni view al componente da renderizzare)
+ * @class AppRouter
+ */
 function AppRouter(){
 
     useEffect(() => SplashScreen.hide(), [])

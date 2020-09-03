@@ -9,6 +9,12 @@ const initialState = {
 };
 
 let tmpDispatch
+
+/**
+ *
+ * "Decora" l'app con uno Store glboale in cui conservare lo stato condiviso dell'app
+ * @class Store
+ */
 const Store = ({ children }) => {
     const [state, dispatch] = useReducer(Reducer, initialState);
     tmpDispatch = dispatch

@@ -3,7 +3,13 @@ import TcpSocket from 'react-native-tcp-socket';
 import useToast from './useToast';
 import {Actions} from 'react-native-router-flux'
 
-
+/**
+ * @class useSocket
+ * @param props
+ *
+ * Fornisce un'interfaccia per comunicare con una socket Java
+ *
+ */
 export default function useSocket(props){
 
     const [options, setOptions] = useState({})
@@ -19,12 +25,25 @@ export default function useSocket(props){
         setError(props.error ? props.error : false)
     }
 
+    /**
+     * @method connect
+     * @param host - indirizzo dell'host a cui connettersi
+     * @param port - porta in cui è in ascolto il processo server sull'host
+     *
+     * Prepara la connessione all'host
+     */
     const connect = ([host, port]) => {
         setOptions({host, port})
         disconnect()
         setConnecting(true)
     }
 
+
+    /**
+     * @method disconnect
+     *
+     * Effettua la connessione della socket
+     */
     const disconnect = () => {
         if(client !== null){
             client.destroy()
@@ -35,24 +54,24 @@ export default function useSocket(props){
         setError(false)
     }
 
+    /**
+     * @method anonimo
+     *
+     * Effettua la connessione all'host
+     */
     //CONNECTION REQUESTED
     useEffect(() => {
         if (connecting) {
             console.log(`[Attempting to connect ${options.host}:${options.port}]`)
             setClient(TcpSocket.createConnection({...options, timeout:5000}))
-            /*setTimeout(() => {
-                //TODO - CONNECTED E' SEMPRE FALSE
-                console.log({client})
-                console.log('check:', {connected})
-                if(!connected){
-                    console.log("[ERROR] Could not connect to socket");
-                    disconnect()
-                    setError(true)
-                }
-            }, 2000)*/
         }
     }, [connecting]);
 
+    /**
+     * @method anonimo
+     *
+     * Quando è stata stabilita la connessione, chiama initializaClient()
+     */
     //WHEN CONNECTED
     useEffect(() => {
         if(client !== null && client !== undefined){
@@ -61,6 +80,12 @@ export default function useSocket(props){
         }
     }, [client])
 
+    /**
+     * @method sendMessage
+     *
+     * @param message - il messaggio da scrivere sulla socket
+     * @param callback - funzione da eseguire una volta inviato il messaggio
+     */
     const sendMessage = (message, callback) => {
         //showToast("[SENT to server] -> " + message)
         try{
@@ -74,6 +99,11 @@ export default function useSocket(props){
             callback()
     }
 
+    /**
+     * @method initializaClient
+     *
+     * Inizializza i listener della socket
+     */
     const initializeClient = () => {
         client.on('connect', function () {
             console.log(`CONNECTED TO ${options.host}:${options.port}`)

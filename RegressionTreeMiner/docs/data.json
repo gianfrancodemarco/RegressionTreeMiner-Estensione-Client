@@ -1,0 +1,578 @@
+{
+    "project": {},
+    "files": {
+        "components\\CustomIcon\\CustomIcon.js": {
+            "name": "components\\CustomIcon\\CustomIcon.js",
+            "modules": {},
+            "classes": {
+                "CustomIcon": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "hooks\\globalState\\Reducer.js": {
+            "name": "hooks\\globalState\\Reducer.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "hooks\\globalState\\Store.js": {
+            "name": "hooks\\globalState\\Store.js",
+            "modules": {},
+            "classes": {
+                "Store": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "hooks\\useSocket.js": {
+            "name": "hooks\\useSocket.js",
+            "modules": {},
+            "classes": {
+                "useSocket": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "hooks\\useToast.js": {
+            "name": "hooks\\useToast.js",
+            "modules": {},
+            "classes": {
+                "useToast": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "screens\\ConnectScreen\\ConnectScreen.js": {
+            "name": "screens\\ConnectScreen\\ConnectScreen.js",
+            "modules": {},
+            "classes": {
+                "ConnectScreen": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "screens\\ErrorScreen\\ErrorScreen.js": {
+            "name": "screens\\ErrorScreen\\ErrorScreen.js",
+            "modules": {},
+            "classes": {
+                "ErrorScreen": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "screens\\LoadDatasetScreen\\LoadDatasetScreen.js": {
+            "name": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "modules": {},
+            "classes": {
+                "LoadDatasetScreen": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "screens\\ShowTreeScreen\\ShowTreeScreen.js": {
+            "name": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "modules": {},
+            "classes": {
+                "ShowTreeScreen": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "utils\\Utils.js": {
+            "name": "utils\\Utils.js",
+            "modules": {},
+            "classes": {
+                "Utils": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "AppRouter.js": {
+            "name": "AppRouter.js",
+            "modules": {},
+            "classes": {
+                "AppRouter": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "CustomIcon": {
+            "name": "CustomIcon",
+            "shortname": "CustomIcon",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "components\\CustomIcon\\CustomIcon.js",
+            "line": 6,
+            "description": "Componente custom per la renderizzazione di icone"
+        },
+        "Store": {
+            "name": "Store",
+            "shortname": "Store",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "hooks\\globalState\\Store.js",
+            "line": 13,
+            "description": "\"Decora\" l'app con uno Store glboale in cui conservare lo stato condiviso dell'app"
+        },
+        "useSocket": {
+            "name": "useSocket",
+            "shortname": "useSocket",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "hooks\\useSocket.js",
+            "line": 6,
+            "params": [
+                {
+                    "name": "props\n\nFornisce",
+                    "description": "un'interfaccia per comunicare con una socket Java"
+                }
+            ]
+        },
+        "useToast": {
+            "name": "useToast",
+            "shortname": "useToast",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "hooks\\useToast.js",
+            "line": 4,
+            "description": "Fornisce delle API per la visualizzazione di toast(messaggi) su Android"
+        },
+        "ConnectScreen": {
+            "name": "ConnectScreen",
+            "shortname": "ConnectScreen",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "screens\\ConnectScreen\\ConnectScreen.js",
+            "line": 18,
+            "description": "Componente funzionale che renderizza la schermata di connessione al server"
+        },
+        "ErrorScreen": {
+            "name": "ErrorScreen",
+            "shortname": "ErrorScreen",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "screens\\ErrorScreen\\ErrorScreen.js",
+            "line": 10,
+            "description": "Componente funzionale che renderizza la schermata che viene visualizzata in caso di errore"
+        },
+        "LoadDatasetScreen": {
+            "name": "LoadDatasetScreen",
+            "shortname": "LoadDatasetScreen",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 31,
+            "description": "Componente funzionale che renderizza le schermate che permettono all'utente di selezionare il dataset"
+        },
+        "ShowTreeScreen": {
+            "name": "ShowTreeScreen",
+            "shortname": "ShowTreeScreen",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 34,
+            "description": "Componente funzionale che renderizza la schermata in cui vengono visualizzate le regole dell'albero, la sua struttura e da cui è possibile predire nuovi valoris"
+        },
+        "Utils": {
+            "name": "Utils",
+            "shortname": "Utils",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "utils\\Utils.js",
+            "line": 1,
+            "description": "Racchiude metodi di utilità"
+        },
+        "AppRouter": {
+            "name": "AppRouter",
+            "shortname": "AppRouter",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "AppRouter.js",
+            "line": 11,
+            "description": "Componente funzionale che il ruoter per l'applicazione (associa ogni view al componente da renderizzare)"
+        }
+    },
+    "elements": {},
+    "classitems": [
+        {
+            "file": "hooks\\globalState\\Reducer.js",
+            "line": 1,
+            "itemtype": "method",
+            "name": "Reducer",
+            "params": [
+                {
+                    "name": "state",
+                    "description": "- lo stato attuale dell'app"
+                },
+                {
+                    "name": "action",
+                    "description": "- operazione da eseguire e payload\n\n\nPrende in input un'action e in base a action.type modifica lo stato globale del sistema con il contenuto di action.payload"
+                }
+            ],
+            "class": "Store"
+        },
+        {
+            "file": "hooks\\useSocket.js",
+            "line": 28,
+            "itemtype": "method",
+            "name": "connect",
+            "params": [
+                {
+                    "name": "host",
+                    "description": "- indirizzo dell'host a cui connettersi"
+                },
+                {
+                    "name": "port",
+                    "description": "- porta in cui è in ascolto il processo server sull'host\n\nPrepara la connessione all'host"
+                }
+            ],
+            "class": "useSocket"
+        },
+        {
+            "file": "hooks\\useSocket.js",
+            "line": 42,
+            "itemtype": "method",
+            "name": "disconnect\n\nEffettua la connessione della socket",
+            "class": "useSocket"
+        },
+        {
+            "file": "hooks\\useSocket.js",
+            "line": 57,
+            "itemtype": "method",
+            "name": "anonimo\n\nEffettua la connessione all'host",
+            "class": "useSocket"
+        },
+        {
+            "file": "hooks\\useSocket.js",
+            "line": 70,
+            "itemtype": "method",
+            "name": "anonimo\n\nQuando è stata stabilita la connessione, chiama initializaClient()",
+            "class": "useSocket"
+        },
+        {
+            "file": "hooks\\useSocket.js",
+            "line": 83,
+            "itemtype": "method",
+            "name": "sendMessage",
+            "params": [
+                {
+                    "name": "message",
+                    "description": "- il messaggio da scrivere sulla socket"
+                },
+                {
+                    "name": "callback",
+                    "description": "- funzione da eseguire una volta inviato il messaggio"
+                }
+            ],
+            "class": "useSocket"
+        },
+        {
+            "file": "hooks\\useSocket.js",
+            "line": 102,
+            "itemtype": "method",
+            "name": "initializaClient\n\nInizializza i listener della socket",
+            "class": "useSocket"
+        },
+        {
+            "file": "screens\\ConnectScreen\\ConnectScreen.js",
+            "line": 33,
+            "description": "Hook che in caso di errore renderizza ErrorScreen",
+            "itemtype": "method",
+            "name": "anonimo",
+            "class": "ConnectScreen"
+        },
+        {
+            "file": "screens\\ConnectScreen\\ConnectScreen.js",
+            "line": 44,
+            "description": "Hook che renderizza la schermata successiva una volta avvenuta la connessione",
+            "itemtype": "method",
+            "name": "anonimo",
+            "class": "ConnectScreen"
+        },
+        {
+            "file": "screens\\ConnectScreen\\ConnectScreen.js",
+            "line": 55,
+            "description": "Procedura che richiama il metodo connect dell'hook useSocket",
+            "params": [
+                {
+                    "name": "host",
+                    "description": "indirizzo del server nel formato host:port",
+                    "type": "String"
+                }
+            ],
+            "itemtype": "method",
+            "name": "connectToServer",
+            "class": "ConnectScreen"
+        },
+        {
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 64,
+            "description": "Hook che in caso di errore renderizza ErrorScreen",
+            "itemtype": "method",
+            "name": "anonimo",
+            "class": "LoadDatasetScreen"
+        },
+        {
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 75,
+            "description": "Metodo che intercetta l'evento di pressione del tasto indietro del dispositivo.\nSe si è nello step 1, riporta alla schermata di connessione; altrimenti torna indietro allo step 1.",
+            "itemtype": "method",
+            "name": "backHandler",
+            "class": "LoadDatasetScreen"
+        },
+        {
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 100,
+            "params": [
+                {
+                    "name": "data",
+                    "description": "- messaggio ricevuto dal server\n\nListener che resta in ascolto dei messaggi del server. Decodifica i messaggi ricevuti e se trova la lista dei dataset, li visualizza",
+                    "type": "String"
+                }
+            ],
+            "itemtype": "method",
+            "name": "tableReceivedObserver",
+            "class": "LoadDatasetScreen"
+        },
+        {
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 126,
+            "description": "Listener che resta in ascolto dei messaggi del server.\n Decodifica i messaggi ricevuti e se trova la descrizione dell'albero, la salva nello stato globale dell'app e visualizza ShowTreeScreen",
+            "itemtype": "method",
+            "name": "tableReceivedObserver",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "- messaggio ricevuto dal server",
+                    "type": "String"
+                }
+            ],
+            "class": "LoadDatasetScreen"
+        },
+        {
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 158,
+            "description": "Listener che resta in ascolto dei messaggi del server.\n Decodifica i messaggi ricevuti e se trova le regole dell'albero, le salva nello stato globale dell'app",
+            "itemtype": "method",
+            "name": "rulesReceiverObserver",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "- messaggio ricevuto dal server",
+                    "type": "String"
+                }
+            ],
+            "class": "LoadDatasetScreen"
+        },
+        {
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 176,
+            "description": "Invia un messaggio al server con l'indice della scelta effettuata dall'utente",
+            "itemtype": "method",
+            "name": "sendSelection",
+            "class": "LoadDatasetScreen"
+        },
+        {
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 187,
+            "description": "Recupera le opzioni da visualizzare.\n Se si è verificato un errore, stampa un messaggio a video e torna allo step 1.",
+            "itemtype": "method",
+            "name": "getRadioButton",
+            "class": "LoadDatasetScreen"
+        },
+        {
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 216,
+            "description": "Apre il DocumentPicker del sistema operativo e attende la scelta dell'utente.\n Se il file non ha estensione .sql/.dat, visualizza un messaggio di notifica\n Altrimenti, carica i byte del file e chiama uploadFile()",
+            "itemtype": "method",
+            "name": "selectFile",
+            "class": "LoadDatasetScreen"
+        },
+        {
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 242,
+            "description": "Resta in attesa dell'esito dell'upload del file, quindi lo comunica all'utente",
+            "itemtype": "method",
+            "name": "fileUploadObserver",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "- messaggio ricevuto dal server",
+                    "type": "String"
+                }
+            ],
+            "class": "LoadDatasetScreen"
+        },
+        {
+            "file": "screens\\LoadDatasetScreen\\LoadDatasetScreen.js",
+            "line": 261,
+            "description": "Comunica al server che si sta per inviare un file; quindi invia i byte del file",
+            "itemtype": "method",
+            "name": "uploadFile",
+            "params": [
+                {
+                    "name": "file",
+                    "description": "- i byte del file da inviare"
+                },
+                {
+                    "name": "filename",
+                    "description": "- nome del file"
+                }
+            ],
+            "class": "LoadDatasetScreen"
+        },
+        {
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 59,
+            "description": "Hook che in caso di errore renderizza ErrorScreen",
+            "itemtype": "method",
+            "name": "anonimo",
+            "class": "ShowTreeScreen"
+        },
+        {
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 71,
+            "description": "Gestisce il click sull'icona \"predict\"",
+            "itemtype": "method",
+            "name": "clickPredict",
+            "class": "ShowTreeScreen"
+        },
+        {
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 82,
+            "description": "Gestisce il click sull'icona \"rules\"",
+            "itemtype": "method",
+            "name": "clickRules",
+            "class": "ShowTreeScreen"
+        },
+        {
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 93,
+            "description": "Gestisce il click sull'icona \"tree\"",
+            "itemtype": "method",
+            "name": "clickTree",
+            "class": "ShowTreeScreen"
+        },
+        {
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 104,
+            "description": "Comunica al server l'interruzione della predizione corrente e renderizza LoadDatasetScreen()",
+            "itemtype": "method",
+            "name": "backHandler",
+            "class": "ShowTreeScreen"
+        },
+        {
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 115,
+            "description": "Al primo render avvia la predizione di un nuovo valore (anche se non si è ancora cliccato sull'icona \"predict\")",
+            "itemtype": "method",
+            "name": "anonimo",
+            "class": "ShowTreeScreen"
+        },
+        {
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 126,
+            "description": "Legge i messaggi del server per la predizione di nuovi valori\n Se il messaggio è una <query>, estrapola le opzioni e le visualizza\n Altrimenti visualizza il valore predetto",
+            "itemtype": "method",
+            "name": "predictClassObserver",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "- messaggio ricevuto dal server",
+                    "type": "String"
+                }
+            ],
+            "class": "ShowTreeScreen"
+        },
+        {
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 150,
+            "description": "Invia al server l'attuale scelta per la predizione",
+            "itemtype": "method",
+            "name": "sendPredict",
+            "class": "ShowTreeScreen"
+        },
+        {
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 157,
+            "description": "Invia al server un messaggio per iniziare una nuova predizione",
+            "itemtype": "method",
+            "name": "restartPredict",
+            "class": "ShowTreeScreen"
+        },
+        {
+            "file": "screens\\ShowTreeScreen\\ShowTreeScreen.js",
+            "line": 169,
+            "description": "Ritorna uno spinner se si sta ancora attendendo la risposta del server, il form per la predizione altrimenti",
+            "itemtype": "method",
+            "name": "predictForm",
+            "class": "ShowTreeScreen"
+        },
+        {
+            "file": "utils\\Utils.js",
+            "line": 8,
+            "itemtype": "method",
+            "name": "decodeMessage",
+            "params": [
+                {
+                    "name": "message",
+                    "description": "- il messaggio da decodificare\n\nRiceve in input i byte del messaggio e restituisce la stringa utf-8 corrispondente"
+                }
+            ],
+            "class": "Utils"
+        },
+        {
+            "file": "utils\\Utils.js",
+            "line": 16,
+            "itemtype": "method",
+            "name": "decodeMessage",
+            "params": [
+                {
+                    "name": "uri",
+                    "description": "- l'uri della risorsa (file) da leggere"
+                },
+                {
+                    "name": "callback",
+                    "description": "- eventuale funzione di callback da chiamare al termine della lettura della risposta\n\nLegge un file dal file system, quindi chiama @callback passando in input i byte letti"
+                }
+            ],
+            "class": "Utils"
+        }
+    ],
+    "warnings": []
+}

@@ -19,7 +19,7 @@ import {
     white
 } from "./ShowTreeScreenStyles";
 import {
-    getNextButton, getRestartButton, nextButtonContainer, nextButtonContainerPredict,
+    getNextButton, getRestartButton, nextButtonContainerPredict,
     radioGroupStyle,
     shadowContainer,
     shadowContainerInnerView
@@ -30,6 +30,12 @@ import CustomIcon from "../../components/CustomIcon/CustomIcon";
 import Spinner from "react-native-loading-spinner-overlay";
 
 
+
+/**
+ * Componente funzionale che renderizza la schermata in cui vengono visualizzate le regole dell'albero, la sua struttura e da cui è possibile predire nuovi valoris
+ *
+ * @class ShowTreeScreen
+ */
 export default function ShowTreeScreen() {
     const [state, dispatch] = useContext(Context)
     const [showRules, setShowRules] = useState(true)
@@ -50,6 +56,10 @@ export default function ShowTreeScreen() {
     const [split, setSplit] = useState(0)
     const [leafValue, setLeafValue] = useState(null)
 
+    /**
+     * Hook che in caso di errore renderizza ErrorScreen
+     * @method anonimo
+     */
     useEffect(() => {
         if(error){
             showLoading(false)
@@ -57,37 +67,70 @@ export default function ShowTreeScreen() {
         }
     }, [error])
 
+
+    /**
+     *
+     * Gestisce il click sull'icona "predict"
+     * @method clickPredict
+     */
     const clickPredict = () => {
         setShowTree(false)
         setShowRules(false)
         setShowPredict(true)
     }
 
+    /**
+     *
+     * Gestisce il click sull'icona "rules"
+     * @method clickRules
+     */
     const clickRules = () => {
         setShowTree(false)
         setShowPredict(false)
         setShowRules(true)
     }
 
+    /**
+     *
+     * Gestisce il click sull'icona "tree"
+     * @method clickTree
+     */
     const clickTree = () => {
         setShowPredict(false)
         setShowRules(false)
         setShowTree(true)
     }
 
+    /**
+     *
+     * Comunica al server l'interruzione della predizione corrente e renderizza LoadDatasetScreen()
+     * @method backHandler
+     */
     const backHandler = () => {
         sendMessage(MESSAGES.INTERRUPT_PREDICTION)
         BackHandler.removeEventListener('hardwareBackPress', backHandler)
         Actions.replace('loadDataset')
     }
 
+    /**
+     *
+     * Al primo render avvia la predizione di un nuovo valore (anche se non si è ancora cliccato sull'icona "predict")
+     * @method anonimo
+     */
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', backHandler)
         sendMessage(MESSAGES.START_PREDICTION)
         client.on('data', predictClassObserver)
     }, [])
 
-
+    /**
+     *
+     * Legge i messaggi del server per la predizione di nuovi valori
+     * Se il messaggio è una <query>, estrapola le opzioni e le visualizza
+     * Altrimenti visualizza il valore predetto
+     * @method predictClassObserver
+     * @param {String} data - messaggio ricevuto dal server
+     */
     const predictClassObserver = (data) => {
         const decoded = decodeMessage(data)
 
@@ -104,9 +147,18 @@ export default function ShowTreeScreen() {
         }
     }
 
+    /**
+     *
+     * Invia al server l'attuale scelta per la predizione
+     * @method sendPredict
+     */
     const sendPredict = () => sendMessage(split.toString())
 
-
+    /**
+     *
+     * Invia al server un messaggio per iniziare una nuova predizione
+     * @method restartPredict
+     */
     const restartPredict = () => {
         sendMessage("[START PREDICTION]")
         setOptions([])
@@ -114,6 +166,11 @@ export default function ShowTreeScreen() {
         setLeafValue(null)
     }
 
+    /**
+     *
+     * Ritorna uno spinner se si sta ancora attendendo la risposta del server, il form per la predizione altrimenti
+     * @method predictForm
+     */
     const predictForm = () => {
         if (options.length === 0) {
             return <Spinner

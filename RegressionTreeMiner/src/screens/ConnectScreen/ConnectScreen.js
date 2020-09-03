@@ -15,6 +15,11 @@ import MainLayout from '../MainLayout/MainLayout';
 import useGlobalState from "../../hooks/globalState/useGlobalState";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+/**
+ * Componente funzionale che renderizza la schermata di connessione al server
+ *
+ * @class ConnectScreen
+ */
 export default function ConnectScreen() {
 
     const [state, dispatch] = useContext(Context)
@@ -25,6 +30,10 @@ export default function ConnectScreen() {
     //useGlobalState -> EFFETTUA IL DISPATCH NELLO STATO GLOBALE AGGIORNANDO LA SOCKET
     const [connected, connect,,,, error] = useGlobalState(useSocket(), "UPDATE_SOCKET", "socket")
 
+    /**
+     * Hook che in caso di errore renderizza ErrorScreen
+     * @method anonimo
+     */
     useEffect(() => {
         if(error){
             showLoading(false)
@@ -32,6 +41,10 @@ export default function ConnectScreen() {
         }
     }, [error])
 
+    /**
+     * Hook che renderizza la schermata successiva una volta avvenuta la connessione
+     * @method anonimo
+     */
     useEffect(() => {
         if(connected){
             showLoading(false)
@@ -39,6 +52,11 @@ export default function ConnectScreen() {
         }
     }, [connected])
 
+    /**
+     * Procedura che richiama il metodo connect dell'hook useSocket
+     * @param {String} host indirizzo del server nel formato host:port
+     * @method connectToServer
+     */
     const connectToServer = (host) => {
         showLoading(true)
         connect(host.split(":"))

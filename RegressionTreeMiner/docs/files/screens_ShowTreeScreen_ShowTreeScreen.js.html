@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>screens\ShowTreeScreen\ShowTreeScreen.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/AppRouter.html">AppRouter</a></li>
+                                <li><a href="../classes/ConnectScreen.html">ConnectScreen</a></li>
+                                <li><a href="../classes/CustomIcon.html">CustomIcon</a></li>
+                                <li><a href="../classes/ErrorScreen.html">ErrorScreen</a></li>
+                                <li><a href="../classes/LoadDatasetScreen.html">LoadDatasetScreen</a></li>
+                                <li><a href="../classes/ShowTreeScreen.html">ShowTreeScreen</a></li>
+                                <li><a href="../classes/Store.html">Store</a></li>
+                                <li><a href="../classes/useSocket.html">useSocket</a></li>
+                                <li><a href="../classes/useToast.html">useToast</a></li>
+                                <li><a href="../classes/Utils.html">Utils</a></li>
+                            </ul>
+
+
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+
+                </div>
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: screens\ShowTreeScreen\ShowTreeScreen.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+import React, {useState, useContext, useEffect} from &#x27;react&#x27;;
+import {
+    View,
+    Button,
+    Text,
+    ScrollView,
+    Dimensions,
+    BackHandler,
+} from &#x27;react-native&#x27;;
+import MainLayout from &#x27;../MainLayout/MainLayout&#x27;;
+import {Context, showLoading} from &quot;../../hooks/globalState/Store&quot;;
+import {BoxShadow} from &quot;react-native-shadow&quot;;
+import {Actions} from &#x27;react-native-router-flux&#x27;
+import {decodeMessage} from &quot;../../utils/Utils&quot;;
+import RadioForm from &quot;react-native-simple-radio-button&quot;;
+import {MESSAGES} from &quot;../../utils/Dataset&quot;;
+import {
+    customContainer,
+    white
+} from &quot;./ShowTreeScreenStyles&quot;;
+import {
+    getNextButton, getRestartButton, nextButtonContainerPredict,
+    radioGroupStyle,
+    shadowContainer,
+    shadowContainerInnerView
+} from &quot;../LoadDatasetScreen/LoadDatasetScreenStyles&quot;;
+import useGlobalState from &quot;../../hooks/globalState/useGlobalState&quot;;
+import useSocket from &quot;../../hooks/useSocket&quot;;
+import CustomIcon from &quot;../../components/CustomIcon/CustomIcon&quot;;
+import Spinner from &quot;react-native-loading-spinner-overlay&quot;;
+
+
+
+/**
+ * Componente funzionale che renderizza la schermata in cui vengono visualizzate le regole dell&#x27;albero, la sua struttura e da cui è possibile predire nuovi valoris
+ *
+ * @class ShowTreeScreen
+ */
+export default function ShowTreeScreen() {
+    const [state, dispatch] = useContext(Context)
+    const [showRules, setShowRules] = useState(true)
+    const [showTree, setShowTree] = useState(false)
+
+
+    //useGlobalState -&gt; RICOSTRUISCE LA SOCKET PARTENDO DA QUELLA CONSERVATA NELLO STATO
+    const [connected, connect, sendMessage, client, closeConnection, error] = useGlobalState(useSocket(
+        {
+            connected: state.socket[0],
+            error: state.socket[5],
+            client: state.socket[3]
+        }), &quot;UPDATE_SOCKET&quot;, &quot;socket&quot;)
+
+    //PREDICT CLASS
+    const [showPredict, setShowPredict] = useState(false)
+    const [options, setOptions] = useState()
+    const [split, setSplit] = useState(0)
+    const [leafValue, setLeafValue] = useState(null)
+
+    /**
+     * Hook che in caso di errore renderizza ErrorScreen
+     * @method anonimo
+     */
+    useEffect(() =&gt; {
+        if(error){
+            showLoading(false)
+            Actions.replace(&#x27;error&#x27;)
+        }
+    }, [error])
+
+
+    /**
+     *
+     * Gestisce il click sull&#x27;icona &quot;predict&quot;
+     * @method clickPredict
+     */
+    const clickPredict = () =&gt; {
+        setShowTree(false)
+        setShowRules(false)
+        setShowPredict(true)
+    }
+
+    /**
+     *
+     * Gestisce il click sull&#x27;icona &quot;rules&quot;
+     * @method clickRules
+     */
+    const clickRules = () =&gt; {
+        setShowTree(false)
+        setShowPredict(false)
+        setShowRules(true)
+    }
+
+    /**
+     *
+     * Gestisce il click sull&#x27;icona &quot;tree&quot;
+     * @method clickTree
+     */
+    const clickTree = () =&gt; {
+        setShowPredict(false)
+        setShowRules(false)
+        setShowTree(true)
+    }
+
+    /**
+     *
+     * Comunica al server l&#x27;interruzione della predizione corrente e renderizza LoadDatasetScreen()
+     * @method backHandler
+     */
+    const backHandler = () =&gt; {
+        sendMessage(MESSAGES.INTERRUPT_PREDICTION)
+        BackHandler.removeEventListener(&#x27;hardwareBackPress&#x27;, backHandler)
+        Actions.replace(&#x27;loadDataset&#x27;)
+    }
+
+    /**
+     *
+     * Al primo render avvia la predizione di un nuovo valore (anche se non si è ancora cliccato sull&#x27;icona &quot;predict&quot;)
+     * @method anonimo
+     */
+    useEffect(() =&gt; {
+        BackHandler.addEventListener(&#x27;hardwareBackPress&#x27;, backHandler)
+        sendMessage(MESSAGES.START_PREDICTION)
+        client.on(&#x27;data&#x27;, predictClassObserver)
+    }, [])
+
+    /**
+     *
+     * Legge i messaggi del server per la predizione di nuovi valori
+     * Se il messaggio è una &lt;query&gt;, estrapola le opzioni e le visualizza
+     * Altrimenti visualizza il valore predetto
+     * @method predictClassObserver
+     * @param {String} data - messaggio ricevuto dal server
+     */
+    const predictClassObserver = (data) =&gt; {
+        const decoded = decodeMessage(data)
+
+        if (decoded &amp;&amp; decoded.indexOf(MESSAGES.QUERY) !== -1){
+            let options = decoded.replace(MESSAGES.QUERY, &#x27;&#x27;).trim().split(&#x27;\n&#x27;).map(el =&gt; ({label: el}))
+            setOptions(options.map((el, index )=&gt; ({
+                value: index,
+                label: el.label.substring(el.label.indexOf(&#x27;:&#x27;) + 1, el.label.length)})))
+        }
+
+
+        if(decoded &amp;&amp; decoded.indexOf(MESSAGES.END) !== -1){
+            setLeafValue(decoded.replace(MESSAGES.END, &#x27;&#x27;).trim())
+        }
+    }
+
+    /**
+     *
+     * Invia al server l&#x27;attuale scelta per la predizione
+     * @method sendPredict
+     */
+    const sendPredict = () =&gt; sendMessage(split.toString())
+
+    /**
+     *
+     * Invia al server un messaggio per iniziare una nuova predizione
+     * @method restartPredict
+     */
+    const restartPredict = () =&gt; {
+        sendMessage(&quot;[START PREDICTION]&quot;)
+        setOptions([])
+        setSplit(0)
+        setLeafValue(null)
+    }
+
+    /**
+     *
+     * Ritorna uno spinner se si sta ancora attendendo la risposta del server, il form per la predizione altrimenti
+     * @method predictForm
+     */
+    const predictForm = () =&gt; {
+        if (options.length === 0) {
+            return &lt;Spinner
+                visible={true}
+                textContent={&#x27;Loading...&#x27;}
+                textStyle={{color: &#x27;white&#x27;}}
+            /&gt;
+        }
+
+
+        else if (leafValue === null)
+            return &lt;&gt;
+                &lt;ScrollView style={{flexGrow: 0.65}}&gt;
+                    &lt;RadioForm
+                        {...radioGroupStyle}
+                        labelStyle={{fontFamily: &#x27;sans-serif-light&#x27;}}
+                        buttonSize={30}
+                        radio_props={options}
+                        initial={0}
+                        onPress={setSplit}
+                    /&gt;
+                &lt;/ScrollView&gt;
+                &lt;View style={nextButtonContainerPredict}&gt;
+                    &lt;Button {...getNextButton(connected)} onPress={() =&gt; {
+                        sendPredict()
+                    }}/&gt;
+                &lt;/View&gt;
+            &lt;/&gt;
+
+
+    else return &lt;&gt;
+                &lt;View style={{height: Dimensions.get(&quot;screen&quot;).height * 0.25, alignItems: &quot;center&quot;}}&gt;
+                    &lt;Text style={{...white, fontSize: 25, fontStyle: &quot;italic&quot;}}&gt;Predicted value :&lt;/Text&gt;
+                    &lt;Text style={{...white, fontSize: 40, fontWeight: &quot;bold&quot;}}&gt; {leafValue}&lt;/Text&gt;
+                &lt;/View&gt;
+                &lt;View style={nextButtonContainerPredict}&gt;
+                    &lt;Button {...getRestartButton(connected)} onPress={restartPredict} /&gt;
+                &lt;/View&gt;
+            &lt;/&gt;
+    }
+
+    return (
+        &lt;MainLayout customContainer={customContainer}&gt;
+            &lt;View style={{display: &quot;flex&quot;, flexDirection: &quot;row&quot;}}&gt;
+                &lt;CustomIcon name={&quot;edit&quot;}  active={showRules} onPress={clickRules} viewStyle={{paddingLeft: 9}} /&gt;
+                &lt;CustomIcon name={&quot;tree&quot;}  active={showTree} onPress={clickTree}  viewStyle={{paddingLeft: 10, paddingTop: 3}} /&gt;
+                &lt;CustomIcon name={&quot;plus&quot;}  active={showPredict}onPress={clickPredict} /&gt;
+            &lt;/View&gt;
+            &lt;BoxShadow setting={{...shadowContainer, height: fullHeight}}&gt;
+                &lt;View style={shadowContainerInnerView}&gt;
+                    {!showPredict &amp;&amp; &lt;ScrollView&gt;
+                        {showTree &amp;&amp; &lt;ScrollView horizontal={true}&gt;
+                            &lt;Text style={white}&gt;{state.tree.concat(&quot;\n\n\n\n&quot;)}&lt;/Text&gt;
+                        &lt;/ScrollView&gt;}
+                        {showRules &amp;&amp; &lt;ScrollView horizontal={true}&gt;
+                            &lt;Text style={white}&gt;{state.rules.concat(&quot;\n\n\n\n&quot;)}&lt;/Text&gt;
+                        &lt;/ScrollView&gt;}
+                    &lt;/ScrollView&gt;}
+                    {showPredict &amp;&amp; predictForm()}
+                &lt;/View&gt;
+
+            &lt;/BoxShadow&gt;
+        &lt;/MainLayout&gt;
+    );
+}
+
+const fullHeight = Dimensions.get(&#x27;screen&#x27;).height * 0.50
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

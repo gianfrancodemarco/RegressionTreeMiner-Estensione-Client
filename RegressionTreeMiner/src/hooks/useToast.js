@@ -1,6 +1,11 @@
 import React, {useMemo} from "react";
 import { ToastAndroid } from "react-native";
 
+/**
+ *
+ * Fornisce delle API per la visualizzazione di toast(messaggi) su Android
+ * @class useToast
+ */
 export default function useToast(){
     const showToast = (message) => ToastAndroid.show(message, ToastAndroid.LONG);
 
